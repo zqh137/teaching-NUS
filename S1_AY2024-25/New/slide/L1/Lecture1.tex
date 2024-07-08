@@ -1,0 +1,296 @@
+\documentclass[19pt,landscaoe]{article}
+\usepackage[landscape]{geometry}
+\geometry{a5paper,scale=0.8}
+%\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=0.5cm}
+\usepackage{color}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{graphicx} 
+\usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
+% \usepackage[british]{babel}
+%\usepackage[T1]{fontenc}
+%\usepackage{mathptmx}
+% \usepackage{times}
+\usepackage{datetime2}
+\usepackage{filemod}
+% \usepackage{fontspec}    %change font 
+% \setmainfont{Times New Roman}%fontspec下这个命令设置全局默认字体
+\newtheorem{thm}{Theorem}%[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{defi}[thm]{Definition}
+\newtheorem{lma}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{exam}[thm]{Example}
+\newtheorem{countexam}[thm]{Counterexample}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{con}[thm]{Conjecture}
+%\bracketfactory{floor}{\lfloor}{\rfloor}
+\usepackage{enumerate}
+\usepackage{color}
+%\usetheme{Copenhagen}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\newcommand{\law}{\mathscr{L}}
+\newcommand{\HH}{\mathscr{H}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\IP}{\mathbb{P}} 
+\newcommand{\bone}{{\bf 1}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\newcommand{\IE}{\E}
+\newcommand{\mean}{\E}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\non}{\nonumber}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+%\newcommand{\C}{{\mathds{C}}}
+\newcommand{\ci}{{\cal I}}
+\newcommand{\cf}{{\cal F}}
+\newcommand{\LL}{\textbf{L}}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\var}{\mathrm{Var}}
+\DeclareMathOperator{\cov}{\mathrm{Cov}}
+\DeclareMathOperator{\bigo}{\mathrm{O}}
+\newcommand{\K}{\textbf{Ker}}
+\newcommand{\Id}{\textbf{Id}}
+\newcommand{\Pn}{{\rm Pn}}
+\newcommand{\dtv}{{d_{\rm TV}}}
+\newcommand{\dk}{{d_{\rm K}}}
+\newcommand{\dw}{{d_{\rm W}}}
+\def\tg{{\tilde g}}
+\def\a{{\alpha}}
+\def\cn{{\mathcal{N}}}
+\def\equald{\stackrel{\mbox{\scriptsize{{\rm d}}}}{=}}
+\def\ER{Erd\H{o}s-R\'enyi}
+\usepackage{color} 
+\definecolor{lightblue}{rgb}{0,0.2,0.5}
+\usepackage[colorlinks=true, urlcolor=lightblue,linkcolor=lightblue, citecolor=lightblue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Define bracket commands
+\def\given{\mskip 0.5mu plus 0.25mu\vert\mskip 0.5mu plus 0.15mu}
+\newcounter{@bracketlevel}
+\def\@bracketfactory#1#2#3#4#5#6{
+\expandafter\def\csname#1\endcsname##1{%
+\addtocounter{@bracketlevel}{1}%
+\global\expandafter\let\csname @middummy\alph{@bracketlevel}\endcsname\given%
+\global\def\given{\mskip#5\csname#4\endcsname\vert\mskip#6}\csname#4l\endcsname#2##1\csname#4r\endcsname#3%
+\global\expandafter\let\expandafter\given\csname @middummy\alph{@bracketlevel}\endcsname
+\addtocounter{@bracketlevel}{-1}}%
+}
+\def\bracketfactory#1#2#3{%
+\@bracketfactory{#1}{#2}{#3}{relax}{0.5mu plus 0.25mu}{0.5mu plus 0.15mu}
+\@bracketfactory{b#1}{#2}{#3}{big}{1mu plus 0.25mu minus 0.25mu}{0.6mu plus 0.15mu minus 0.15mu}
+\@bracketfactory{bb#1}{#2}{#3}{Big}{2.4mu plus 0.8mu minus 0.8mu}{1.8mu plus 0.6mu minus 0.6mu}
+\@bracketfactory{bbb#1}{#2}{#3}{bigg}{3.2mu plus 1mu minus 1mu}{2.4mu plus 0.75mu minus 0.75mu}
+\@bracketfactory{bbbb#1}{#2}{#3}{Bigg}{4mu plus 1mu minus 1mu}{3mu plus 0.75mu minus 0.75mu}
+}
+
+
+% \title{Nonparametric Regression}
+% \author{Qingwei Liu}
+% \institute{National University of Singapore}
+% \date{\today}
+
+\begin{document}
+% \maketitle
+%
+
+\begin{titlepage}
+\begin{center}
+    \vfill
+\textbf{\huge ST5207 Nonparametric Regression\\
+Semester 1, AY2024/25}\\[4cm]
+\begin{minipage}{0.4\textwidth}
+\begin{center} \large
+Lecturer:~Qingwei Liu\\
+% Email:liu\_qw@nus.edu.sg\\
+\vskip 6pt
+Department of Statistics and Data Science\\
+\vskip 6pt
+National University of Singapore
+\end{center}
+\end{minipage}%\\[1cm]
+\vfill
+% \includegraphics[width=0.1\textwidth]{./logo}\\[0.5cm]
+\vfill
+\end{center}
+
+\end{titlepage}
+%
+\newpage
+{\LARGE\centerline{\textbf {Administration}\footnote{Last modified in \filemodprintdate{Lecture1}.}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item Course website: Accessible through \href{https://www.nus.edu.sg/canvas/login/}{Canvas} for lecture slides, assignments, solutions, etc. 
+\item Prerequisites: Probability and Mathematical Statistics 
+\item Consultation: via email \& appointment via email
+\item a 2-hour lecture + 1-hour tutorial per week
+\item Homework
+\item Assessment: Final exam ($80\%$) + Assignments ($20\%$)
+\item Main reference includes \cite{hardle04}, \cite{Hall13}, \cite{kloke14}.
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\LARGE\centerline{\textbf {Lecture~1:~Introduction}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions in regression settings.
+\item {\it Smoothing} is a central idea in statistics and takes a role of extract structural elements of variable complexity from patterns of random variation. 
+\item Smoothing is a ``modern'' nonparametric method of statistical inference, as it grows up after the wide-spread of modern computer power. 
+\item A twin brother of the bootstrap, another computer intensive statistical
+method.
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\Large\centerline{\textbf {Parametric v.s. Nonparametric}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+Two distinct approaches of modelling and inference. 
+\vskip 5pt
+Let $X_1,\dots,X_n$ be a sequence of independent and identical distributed (i.i.d.) random variables with a common cumulative distribution function (c.d.f.) $F$. Alternatively, we write $X_1,\dots,X_n\overset{\mathrm{i.i.d.}}{\sim}F$. \\Assume the distribution function $F$ has a density function $$f(x)=\frac{\mathrm{d}F(x)}{\mathrm{d}x}.$$  
+The parametric approach for density estimation assmues known function forms of $F$ or $f$ which involves some unknown {\bf parameters}.\\ We may write
+$$F(x)=F_\theta(x)=F(x|\theta).$$
+One has to make prior assumptions about its functional form.
+\end{minipage}
+\newpage
+{\LARGE\centerline{\textbf {Pros and Cons of Parametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The most popular parametric method of inference (estimation, test hypotheses and confidence intervals) is based on Fisher's maximum likelihood (ML).
+\item The maximum likelihood estimation usually achieves the optimal efficiency of estimation as described by its variance property.
+\item If the specified parametric model is wrong or far away from the true model, estimating the parametric model (MLE etc) may lead to very inaccurate results. 
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\LARGE{\textbf{Parametric Modeling}}}
+\vskip25pt
+\Large\bf{Examples}
+   
+\begin{figure}[h]
+% \begin{minipage}[t]{.4\linewidth}
+
+    %the four numbers after "trim=" are for left bottom right top
+      \includegraphics[width=0.8\textwidth,height=0.5\textwidth]{figure1.eps}
+    %  \caption{$N(\lambda_n,\sigma_n^2)$ without correction} %
+    \label{figure1} 
+
+% \end{minipage}
+\end{figure}
+
+\newpage
+{\LARGE\centerline{\textbf {Lecture~1:~Introduction}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions in regression settings.
+\item {\it Smoothing} is a central idea in statistics and takes a role of extract structural elements of variable complexity from patterns of random variation. 
+\item Smoothing is a ``modern'' nonparametric method of statistical inference, as it grows up after the wide-spread of modern computer power. 
+\item A twin brother of the bootstrap, another computer intensive statistical
+method.
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\LARGE\centerline{\textbf {Lecture~1:~Introduction}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions in regression settings.
+\item {\it Smoothing} is a central idea in statistics and takes a role of extract structural elements of variable complexity from patterns of random variation. 
+\item Smoothing is a ``modern'' nonparametric method of statistical inference, as it grows up after the wide-spread of modern computer power. 
+\item A twin brother of the bootstrap, another computer intensive statistical
+method.
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\LARGE\centerline{\textbf {Lecture~1:~Introduction}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions in regression settings.
+\item {\it Smoothing} is a central idea in statistics and takes a role of extract structural elements of variable complexity from patterns of random variation. 
+\item Smoothing is a ``modern'' nonparametric method of statistical inference, as it grows up after the wide-spread of modern computer power. 
+\item A twin brother of the bootstrap, another computer intensive statistical
+method.
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\LARGE\centerline{\textbf {Lecture~1:~Introduction}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions in regression settings.
+\item {\it Smoothing} is a central idea in statistics and takes a role of extract structural elements of variable complexity from patterns of random variation. 
+\item Smoothing is a ``modern'' nonparametric method of statistical inference, as it grows up after the wide-spread of modern computer power. 
+\item A twin brother of the bootstrap, another computer intensive statistical
+method.
+
+\end{itemize}
+\end{minipage}
+\newpage
+
+
+\newpage
+
+% \begin{figure}[ht]
+% \begin{minipage}[t]{0.4\linewidth}  % <---
+% %the four numbers after "trim=" are for left bottom right top
+%  %  \includegraphics[trim = 10mm 75mm 5mm 80mm,height=0.26\textheight]{vsPn3sd.pdf}  
+%  \caption{Pn($\lambda_n$)} %
+% \label{figure1} \end{minipage}
+% \hfill
+% \begin{minipage}[t]{0.5\linewidth}  % <---
+% %the four numbers after "trim=" are for left bottom right top
+% %   \includegraphics[trim = 10mm 75mm 5mm 80mm,height=0.26\textheight]{vsPnvar.pdf}
+%  \caption{$\Pn(\sigma_n^2)$} %
+% \label{figure4} \end{minipage}
+%     \end{figure}
+    
+% \begin{figure}[ht]
+% \begin{minipage}[t]{0.4\linewidth}  % <---
+% %the four numbers after "trim=" are for left bottom right top
+% %   \includegraphics[trim = 10mm 75mm 5mm 80mm,height=0.26\textheight]{vsNormal3sdCorrection.pdf} 
+% \caption{$N(\lambda_n,\sigma_n^2)$ with correction} %
+% \label{figure3}  \end{minipage}
+% \hfill
+% \begin{minipage}[t]{0.5\linewidth}  % <---
+% %the four numbers after "trim=" are for left bottom right top
+%  %  \includegraphics[trim = 10mm 75mm 5mm 80mm,height=0.26\textheight]{vsNormal3sdNoCorrection.pdf}
+%  \caption{$N(\lambda_n,\sigma_n^2)$ without correction} %
+% \label{figure2} \end{minipage}
+%     \end{figure}
+%     \vskip15pt
+% As observed in [Borovkov \& Pfeifer~(1996)], under the Kolmogorov distance the error of 
+
+% \begin{itemize}
+% \item normal approximation is $O((\ln n)^{-1/2})$;
+% \item Poisson approximation is $O((\ln n)^{-1})$.
+% \end{itemize}
+\newpage
+
+\newpage
+
+\newpage
+
+\bibliographystyle{apalike}
+\bibliography{../ref}
+\end{document}
