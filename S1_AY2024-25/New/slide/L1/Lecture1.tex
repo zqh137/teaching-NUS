@@ -3,6 +3,7 @@
 \geometry{a5paper,scale=0.8}
 %\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=0.5cm}
 \usepackage{color}
+\usepackage{ulem} % for strikethrough
 \usepackage{amsfonts}
 \usepackage{bm}
 \usepackage{graphicx} 
@@ -132,7 +133,7 @@ National University of Singapore
 \item a 2-hour lecture + 1-hour tutorial per week
 \item Homework
 \item Assessment: Final exam ($80\%$) + Assignments ($20\%$)
-\item Main reference includes \cite{hardle04}, \cite{Hall13}, \cite{kloke14}.
+\item Main reference includes \cite{hardle04}, \cite{takezawa05}, \cite{Hall13}, and \cite{kloke14}.
 
 \end{itemize}
 \end{minipage}
@@ -205,7 +206,162 @@ One has to make prior assumptions about its functional form.
 \end{minipage}
 
 \newpage
+{\LARGE{\textbf{Parametric Modeling}}}
+\vskip25pt
+{\Large\bf{Scatter plot of raw data}}
 
+\begin{figure}[h]
+% \begin{minipage}[t]{1\linewidth}
+\centering
+    %the four numbers after "trim=" are for left bottom right top
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{MotocycleData.eps}
+    \label{figure2} 
+
+% \end{minipage}
+\end{figure}
+
+\newpage
+{\LARGE{\textbf{Parametric Modeling}}}
+\vskip25pt
+{\Large\bf{Polynomial Fit}}
+
+\begin{figure}[h]
+% \begin{minipage}[t]{1\linewidth}
+\centering
+    %the four numbers after "trim=" are for left bottom right top
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{polyfitting.eps}
+    \label{figure2} 
+
+% \end{minipage}
+\end{figure}
+
+\newpage
+{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+
+Nonparametric inference requires weaker assumptions, for instance, 
+\vfill
+\begin{itemize}
+\item $X_1,\dots,X_n$ are i.i.d. and $\E(X_1^2)<\infty$;
+\item Or $X_1,\dots,X_n$ are i.i.d. with the $r$-th derivative $f^{(r)}(x)$ of the density exists, for certain $r>0$;
+\item No assumptions about specific forms of the density $f$.
+\end{itemize}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item That makes the results more widely applicable and models more robust, i.e. nonparametric regression estimators are very flexible.
+\item From the viewpoint of nonparametric approach, all the parametric models are too rigid. 
+\item There are situations when a workable parametric model is difficult to establish, for example, in biased sampling. 
+\item But their statistical precision decreases greatly if several explanatory variables are included in the model, a.k.a. {\it the curse of dimensionality}.
+\end{itemize}
+
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Summary}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item Parametric models are fully determined up to one or more parameters. The statistical accuracy is guaranteed by the correctness of the underlying assumptions. 
+\item Nonparametric models avoid using restrictive assumptions of the functional form of the regression function. However, they become difficult to interpret and yield inaccurate estimates if the number of regressors is large. 
+\end{itemize}
+
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Nonparametric Methods}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large Can be classified as 
+\begin{enumerate}
+\item classical nonparametric methods, which are based on signs and ranks developed in 1940s--1970s;
+\item modern nonparametric methods, includes:
+\begin{itemize}
+    \item Smoothing methods, such as kernel, spline, orthogonal series for curve estimation, including density, regression curves. (Note: A curve can be regared as a parameter of infinite dimensions.)
+    \item The Jackknife, Bootstrap and other resampling methods. 
+\end{itemize}
+\end{enumerate}
+The course is mostly around the smoothing method and the curves we considered includes the density 
+    % $$f(x)=\frac{\mathrm{d}F(x)}{\mathrm{d}x},$$
+    and the conditional mean function.
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{A toy example}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+Suppose $\big\{(X_i,Y_i)\big\}_{i=1}^n$ is an i.i.d. sequence, with conditional expectation function
+$$m(x)=\E(Y_i|X_i=x)$$ 
+and conditional variance $$\sigma^2(x)=\Var(Y_i|X_i=x).$$
+Consider the regression 
+\begin{equation}\label{L1-eq1}
+    Y_i=m(X_i)+\varepsilon_i.
+\end{equation}
+Apparently, we have 
+$$\E(\varepsilon_i|X_i)=0,$$ and
+$$\E(\varepsilon_i^2|X_i)=\Var(Y_i|X_i)=\sigma^2(X_i).$$
+Besides, $X_i$ and $\varepsilon_i$ are \sout{independent} uncorrelated, i.e. orthogonal in $L^2$.
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Counterexample}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+    Let $p,p_1,p_2\in(0,1)$ be some constants, and $p_1\ne p_2$. Consider $X,Y$ with following distributions: 
+$X\sim Bernoulli(p)$, i.e. 
+$$\IP(X=1)=1-\IP(X=0)=p,$$
+and $Y\sim Bernoulli(p_1)$ given $X=1$, while $Y\sim Bernoulli(p_2)$ given $X=0$. Therefore, 
+$$\E(Y|X)=p_1\cdot X+p_2\cdot(1-X),$$
+$$\varepsilon:=Y-\E(Y|X)=Y-[p_1\cdot X+p_2\cdot(1-X)].$$
+The conditional distribution of $\varepsilon$ is
+$$\IP(\varepsilon=1-p_1|X=1)=1-\IP(\varepsilon=-p_1|X=1)=p_1,$$
+and  
+$$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
+\textcolor{red}{$X$ and $\varepsilon$ are not independent, but uncorrelated.}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Counterexample(continue)}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+    By the law of total probability, 
+    \begin{equation*}
+        \varepsilon=\begin{cases}
+            1-p_1,~~~&\mathrm{w.p.}~~p_1p,\\
+            -p_1,~~~&\mathrm{w.p.}~~(1-p_1)p,\\
+            1-p_2,~~~&\mathrm{w.p.}~~p_2(1-p),\\
+            -p_2,~~~&\mathrm{w.p.}~~(1-p_2)(1-p),
+        \end{cases}
+    \end{equation*}
+ and  $\E(\varepsilon)=0$. Hence, we have 
+   \begin{eqnarray*}
+    \cov(X,\varepsilon)&=&\E(X\varepsilon)\\
+    &=&p\E(\varepsilon|X=1)\\
+    &=&p[(1-p_1)p_1+(-p_1)(1-p_1)]\\
+    &=&0.
+   \end{eqnarray*}
+\end{minipage}
+
+
+
+
+
+
+
+
+
+\newpage
 \bibliographystyle{apalike}
 \bibliography{../ref}
 \end{document}
