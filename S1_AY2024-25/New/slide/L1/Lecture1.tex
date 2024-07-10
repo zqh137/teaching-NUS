@@ -3,7 +3,7 @@
 \geometry{a5paper,scale=0.8}
 %\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=0.5cm}
 \usepackage{color}
-\usepackage{ulem} % for strikethrough
+% \usepackage{ulem} % for strikethrough
 \usepackage{amsfonts}
 \usepackage{bm}
 \usepackage{graphicx} 
@@ -52,6 +52,7 @@
 \DeclareMathOperator{\Var}{\mathrm{Var}}
 \DeclareMathOperator{\var}{\mathrm{Var}}
 \DeclareMathOperator{\cov}{\mathrm{Cov}}
+\DeclareMathOperator{\corr}{\mathrm{Corr}}
 \DeclareMathOperator{\bigo}{\mathrm{O}}
 \newcommand{\K}{\textbf{Ker}}
 \newcommand{\Id}{\textbf{Id}}
@@ -299,7 +300,7 @@ The course is mostly around the smoothing method and the curves we considered in
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large 
-Suppose $\big\{(X_i,Y_i)\big\}_{i=1}^n$ is an i.i.d. sequence, with conditional expectation function
+Suppose $\big\{(X_i,Y_i)\big\}_{i=1}^n$ is an i.i.d. sequence, with conditional mean function
 $$m(x)=\E(Y_i|X_i=x)$$ 
 and conditional variance $$\sigma^2(x)=\Var(Y_i|X_i=x).$$
 Consider the regression 
@@ -309,9 +310,55 @@ Consider the regression
 Apparently, we have 
 $$\E(\varepsilon_i|X_i)=0,$$ and
 $$\E(\varepsilon_i^2|X_i)=\Var(Y_i|X_i)=\sigma^2(X_i).$$
-Besides, $X_i$ and $\varepsilon_i$ are \sout{independent} uncorrelated, i.e. orthogonal in $L^2$.
+Besides, $X_i$ and $\varepsilon_i$ are uncorrelated, i.e. orthogonal in $L^2$, but \textcolor{red}{not independent}.  (See the couterexample at the end of this slide.) 
 \end{minipage}
 
+\newpage
+{\LARGE{\textbf{Example: (continue)}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+The model in \eqref{L1-eq1} is a nonparametric regression model with the following features:
+\begin{itemize}
+    \item Unspecified function form for the conditional mean function $m$;
+    \item Unspecified form for the distribution of $(X_i,Y_i)$ and $\varepsilon_i$;
+    \item Varying variance component $\sigma^2(X_i)$.
+\end{itemize}
+All of those features generalizes the parametric (linear and nonlinear) regression model to more general and practical setting. 
+\end{minipage}
+
+\newpage
+{\LARGE{\textbf{Nonparatric model}}}
+\vskip15pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+Let $g(x,y)$ be the joint p.d.f. of $(X,Y)$. (suppose it exists of course!) The marginal p.d.f. of $X$ is 
+$$f_X(x):=\int_{\R}g(x,y)\mathrm{d}y,$$
+and the conditional p.d.f. of $Y$ is 
+$$f_{Y|X}(y|x):=\frac{g(x,y)}{f_X(x)}.$$
+The conditional mean function is closely related with the marginal density of $X$, as 
+\begin{eqnarray*}
+    m(x):=\E(Y|X=x)=\int_{\R}yf_{Y|X}(y|x)\mathrm{d}y=\frac1{f_X(x)}\int_{\R}yg(x,y)\mathrm{d}y.
+\end{eqnarray*}
+
+This course will start with nonparametric density estimation, and then the nonparametric estimation of the conditional mean function. 
+\end{minipage}
+
+
+\newpage
+{\LARGE{\textbf{Nonparametric Modeling}}}
+\vskip25pt
+{\Large\bf{Regression Spline Fit}}
+
+\begin{figure}[h]
+% \begin{minipage}[t]{1\linewidth}
+\centering
+    %the four numbers after "trim=" are for left bottom right top
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{splinefit.pdf}
+    \label{figure3} 
+
+% \end{minipage}
+\end{figure}
 \newpage
 {\LARGE\centerline{\textbf{Counterexample}}}
 \vskip25pt
@@ -353,7 +400,24 @@ $$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
    \end{eqnarray*}
 \end{minipage}
 
-
+\newpage
+{\LARGE\centerline{\textbf{A recap for probability theory}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+   \large
+\begin{defi}
+    Random variables $X_1,\dots,X_n$ are called {\bf independent} if ~$\forall B_1,\dots,B_n\in\mathcal{B}(\R),$
+    $$\IP(X_1\in B_1,\dots,X_n\in B_n)=\prod_{i=1}^n\IP(X_i\in B_i).$$
+\end{defi}
+   The correlation between $X$ and $Y$ with $\Var(X),$ $\Var(Y)>0$ is 
+   $$\corr(X,Y)=\frac{\cov(X,Y)}{\sqrt{\var(X)\var(Y)}}.$$
+   When the correlation is zero, one says the RVs are uncorrelated, which is NOT the same as {\bf independent}. Note 
+   $$\Var(X+Y)=\Var(X)+\Var(Y)~~\Leftrightarrow~~\cov(X,Y)=0.$$
+ Again, independence implies uncorrelated, but not the other way around: uncorrelated RVs don't need to be independent! (See the counterexample!)
+   
+   \vskip 5pt
+   But for Gaussian $(X,Y)$, it's the same, i.e. {\it independent} is equivalent to {\it uncorrelated}. 
+\end{minipage}
 
 
 
