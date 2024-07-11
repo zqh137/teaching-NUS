@@ -1,0 +1,441 @@
+\documentclass[19pt,landscaoe]{article}
+\usepackage[landscape]{geometry}
+\geometry{a5paper,scale=0.8}
+%\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=0.5cm}
+\usepackage{color}
+% \usepackage{ulem} % for strikethrough
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{graphicx} 
+\usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
+% \usepackage[british]{babel}
+%\usepackage[T1]{fontenc}
+%\usepackage{mathptmx}
+% \usepackage{times}
+\usepackage{datetime2}
+\usepackage{filemod}
+% \usepackage{fontspec}    %change font 
+% \setmainfont{Times New Roman}%fontspec下这个命令设置全局默认字体
+\newtheorem{thm}{Theorem}%[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{defi}[thm]{Definition}
+\newtheorem{lma}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{exam}[thm]{Example}
+\newtheorem{countexam}[thm]{Counterexample}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{con}[thm]{Conjecture}
+%\bracketfactory{floor}{\lfloor}{\rfloor}
+\usepackage{enumerate}
+\usepackage{color}
+%\usetheme{Copenhagen}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\newcommand{\law}{\mathscr{L}}
+\newcommand{\HH}{\mathscr{H}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\IP}{\mathbb{P}} 
+\newcommand{\bone}{{\bf 1}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\newcommand{\IE}{\E}
+\newcommand{\mean}{\E}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\non}{\nonumber}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+%\newcommand{\C}{{\mathds{C}}}
+\newcommand{\ci}{{\cal I}}
+\newcommand{\cf}{{\cal F}}
+\newcommand{\LL}{\textbf{L}}
+\DeclareMathOperator{\Var}{\mathrm{Var}}
+\DeclareMathOperator{\var}{\mathrm{Var}}
+\DeclareMathOperator{\cov}{\mathrm{Cov}}
+\DeclareMathOperator{\corr}{\mathrm{Corr}}
+\DeclareMathOperator{\bigo}{\mathrm{O}}
+\newcommand{\K}{\textbf{Ker}}
+\newcommand{\Id}{\textbf{Id}}
+\newcommand{\Pn}{{\rm Pn}}
+\newcommand{\dtv}{{d_{\rm TV}}}
+\newcommand{\dk}{{d_{\rm K}}}
+\newcommand{\dw}{{d_{\rm W}}}
+\def\tg{{\tilde g}}
+\def\a{{\alpha}}
+\def\cn{{\mathcal{N}}}
+\def\equald{\stackrel{\mbox{\scriptsize{{\rm d}}}}{=}}
+\def\ER{Erd\H{o}s-R\'enyi}
+\usepackage{color} 
+\definecolor{lightblue}{rgb}{0,0.2,0.5}
+\usepackage[colorlinks=true, urlcolor=lightblue,linkcolor=lightblue, citecolor=lightblue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Define bracket commands
+\def\given{\mskip 0.5mu plus 0.25mu\vert\mskip 0.5mu plus 0.15mu}
+\newcounter{@bracketlevel}
+\def\@bracketfactory#1#2#3#4#5#6{
+\expandafter\def\csname#1\endcsname##1{%
+\addtocounter{@bracketlevel}{1}%
+\global\expandafter\let\csname @middummy\alph{@bracketlevel}\endcsname\given%
+\global\def\given{\mskip#5\csname#4\endcsname\vert\mskip#6}\csname#4l\endcsname#2##1\csname#4r\endcsname#3%
+\global\expandafter\let\expandafter\given\csname @middummy\alph{@bracketlevel}\endcsname
+\addtocounter{@bracketlevel}{-1}}%
+}
+\def\bracketfactory#1#2#3{%
+\@bracketfactory{#1}{#2}{#3}{relax}{0.5mu plus 0.25mu}{0.5mu plus 0.15mu}
+\@bracketfactory{b#1}{#2}{#3}{big}{1mu plus 0.25mu minus 0.25mu}{0.6mu plus 0.15mu minus 0.15mu}
+\@bracketfactory{bb#1}{#2}{#3}{Big}{2.4mu plus 0.8mu minus 0.8mu}{1.8mu plus 0.6mu minus 0.6mu}
+\@bracketfactory{bbb#1}{#2}{#3}{bigg}{3.2mu plus 1mu minus 1mu}{2.4mu plus 0.75mu minus 0.75mu}
+\@bracketfactory{bbbb#1}{#2}{#3}{Bigg}{4mu plus 1mu minus 1mu}{3mu plus 0.75mu minus 0.75mu}
+}
+
+
+% \title{Nonparametric Regression}
+% \author{Qingwei Liu}
+% \institute{National University of Singapore}
+% \date{\today}
+
+\begin{document}
+% \maketitle
+%
+
+% \begin{titlepage}
+% \begin{center}
+%     \vfill
+% \textbf{\huge ST5207 Nonparametric Regression\\
+% Semester 1, AY2024/25}\\[4cm]
+% \begin{minipage}{0.4\textwidth}
+% \begin{center} \large
+% Lecturer:~Qingwei Liu\\
+% % Email:liu\_qw@nus.edu.sg\\
+% \vskip 6pt
+% Department of Statistics and Data Science\\
+% \vskip 6pt
+% National University of Singapore
+% \end{center}
+% \end{minipage}%\\[1cm]
+% \vfill
+% % \includegraphics[width=0.1\textwidth]{./logo}\\[0.5cm]
+% \vfill
+% \end{center}
+
+% \end{titlepage}
+%
+
+\newpage
+\centering{\LARGE\textbf{Lecture~2:~Histogram Method} for nonparametric density estimation\footnote{Last modified in \filemodprintdate{Lecture2}.}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The Empirical  Distribution Function Estimator
+\item The naive Estimator 
+\item The Histogram Estimator  
+\item Asymptotics of the Histogram Estimator 
+\item Bin number selection
+
+\end{itemize}
+\end{minipage}
+\newpage
+{\Large\centerline{\textbf{Problem}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+Let $X$ be a continuous random variable with cumulative distribution function (c.d.f.) $F$ and p.d.f. $f$.
+(Both c.d.f. and p.d.f. characterize the distribution.)
+In practice, the distribution of $X$ is in general unknown. All you have are $n$ observations $X_1,\dots,X_n$ of $X$, in other words, i.i.d. samples with size $n$. 
+\vskip 10pt
+{\bf Problem:}~~~How do you estimate $f(x)$, for all $x\in\R$, using those samples? 
+\vskip 5pt
+Note, we don't assume that $f(x)$ has some known functional form except for some unknown parameter(s) that need to be estimated. (That is exactly the parametric approach.)
+\vskip 5pt
+We will focus on nonparametric ways of estimating $f(x)$ instead. 
+\vskip 5pt
+The histogram is the oldest and the most commonly used nonparametric density estimator.
+% In one hand, we know from second-year probability theory,
+% \begin{equation}
+%     f(x)=\frac{\mathrm{d}F(x)}{\mathrm{d}x}=\lim_{h\to0}\frac{F(x+h)-F(x-h)}{2h}
+% \end{equation}
+\end{minipage}
+\newpage
+{\LARGE\centerline{\textbf{Pros and Cons of Parametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item The most popular parametric method of inference (estimation, test hypotheses and confidence intervals) is based on Fisher's maximum likelihood (ML).
+\item The maximum likelihood estimation usually achieves the optimal efficiency of estimation as described by its variance property.
+\item If the specified parametric model is wrong or far away from the true model, estimating the parametric model (MLE etc) may lead to very inaccurate results. 
+
+\end{itemize}
+\end{minipage}
+% \newpage
+% {\LARGE{\textbf{Parametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Examples}}
+   
+% \begin{figure}[h]
+% \includegraphics[width=0.8\textwidth,height=0.5\textwidth]{figure1.eps}
+%     \label{figure1} 
+% \end{figure}
+
+\newpage
+{\LARGE{\textbf{Parametric Modelling}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large{The motocycle date from \cite{Silverman85a}. More details about the experiment can be found in \cite{schmidt81}.}
+    % \Large
+\begin{itemize}
+\item Collected to study the crashed effects after the motorcycles hit by a stimulated impact. 
+\item Dependent variables: time after a stimulated impact with motorcycles
+\item Response variables: head acceleration of a PTMO (post mortem human test object), capturing the crash effects
+
+\end{itemize}
+\end{minipage}
+
+% \newpage
+% {\LARGE{\textbf{Parametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Scatter plot of raw data}}
+
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{MotocycleData.eps}
+%     \label{figure2} 
+% \end{figure}
+
+% \newpage
+% {\LARGE{\textbf{Parametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Polynomial Fit}}
+
+% \begin{figure}[h]
+% \centering
+%       \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{polyfitting.eps}
+%     \label{figure3} 
+% \end{figure}
+
+\newpage
+{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+
+Nonparametric inference requires weaker assumptions, for instance, 
+\vfill
+\begin{itemize}
+\item $X_1,\dots,X_n$ are i.i.d. and $\E(X_1^2)<\infty$;
+\item Or $X_1,\dots,X_n$ are i.i.d. with the $r$-th derivative $f^{(r)}(x)$ of the density exists, for certain $r>0$;
+\item No assumptions about specific forms of the density $f$.
+\end{itemize}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item That makes the results more widely applicable and models more robust, i.e. nonparametric regression estimators are very flexible.
+\item From the viewpoint of nonparametric approach, all the parametric models are too rigid. 
+\item There are situations when a workable parametric model is difficult to establish, for example, in biased sampling. 
+\item But their statistical precision decreases greatly if several explanatory variables are included in the model, a.k.a. {\it the curse of dimensionality}.
+\end{itemize}
+
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Summary}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+\begin{itemize}
+\item Parametric models are fully determined up to one or more parameters. The statistical accuracy is guaranteed by the correctness of the underlying assumptions. 
+\item Nonparametric models avoid using restrictive assumptions of the functional form of the regression function. However, they become difficult to interpret and yield inaccurate estimates if the number of regressors is large. 
+\end{itemize}
+
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Nonparametric Methods}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large Can be classified as 
+\begin{enumerate}
+\item classical nonparametric methods, which are based on signs and ranks developed in 1940s--1970s;
+\item modern nonparametric methods, includes:
+\begin{itemize}
+    \item Smoothing methods, such as kernel, spline, orthogonal series for curve estimation, including density, regression curves. (Note: A curve can be regared as a parameter of infinite dimensions.)
+    \item The Jackknife, Bootstrap and other resampling methods. 
+\end{itemize}
+\end{enumerate}
+The course is mostly around the smoothing method and the curves we considered includes the density 
+    % $$f(x)=\frac{\mathrm{d}F(x)}{\mathrm{d}x},$$
+    and the conditional mean function.
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{A toy example}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+Suppose $\big\{(X_i,Y_i)\big\}_{i=1}^n$ is an i.i.d. sequence, with conditional mean function
+$$m(x)=\E(Y_i|X_i=x)$$ 
+and conditional variance $$\sigma^2(x)=\Var(Y_i|X_i=x).$$
+Consider the regression 
+\begin{equation}\label{L1-eq1}
+    Y_i=m(X_i)+\varepsilon_i.
+\end{equation}
+Apparently, we have 
+$$\E(\varepsilon_i|X_i)=0,$$ and
+$$\E(\varepsilon_i^2|X_i)=\Var(Y_i|X_i)=\sigma^2(X_i).$$
+Besides, $X_i$ and $\varepsilon_i$ are uncorrelated, i.e. orthogonal in $L^2$, but \textcolor{red}{not independent}.  (See the couterexample at the end of this slide.) 
+\end{minipage}
+
+\newpage
+{\LARGE{\textbf{Example: (continue)}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+The model in \eqref{L1-eq1} is a nonparametric regression model with the following features:
+\begin{itemize}
+    \item Unspecified function form for the conditional mean function $m$;
+    \item Unspecified form for the distribution of $(X_i,Y_i)$ and $\varepsilon_i$;
+    \item Varying variance component $\sigma^2(X_i)$.
+\end{itemize}
+All of those features generalizes the parametric (linear and nonlinear) regression model to more general and practical setting. 
+\end{minipage}
+
+\newpage
+{\LARGE{\textbf{Nonparatric model}}}
+\vskip15pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+Let $g(x,y)$ be the joint p.d.f. of $(X,Y)$. (suppose it exists of course!) The marginal p.d.f. of $X$ is 
+$$f_X(x):=\int_{\R}g(x,y)\mathrm{d}y,$$
+and the conditional p.d.f. of $Y$ is 
+$$f_{Y|X}(y|x):=\frac{g(x,y)}{f_X(x)}.$$
+The conditional mean function is closely related with the marginal density of $X$, as 
+\begin{eqnarray*}
+    m(x):=\E(Y|X=x)=\int_{\R}yf_{Y|X}(y|x)\mathrm{d}y=\frac1{f_X(x)}\int_{\R}yg(x,y)\mathrm{d}y.
+\end{eqnarray*}
+
+This course will start with nonparametric density estimation, and then the nonparametric estimation of the conditional mean function. 
+\end{minipage}
+
+
+% \newpage
+% {\LARGE{\textbf{Nonparametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Regression Spline Fit}}
+
+% \begin{figure}[h]
+% \centering
+%       \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{splinefit.pdf}
+%     \label{figure4} 
+% \end{figure}
+
+\newpage
+{\LARGE\centerline{\textbf{Counterexample}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+    Let $p,p_1,p_2\in(0,1)$ be some constants, and $p_1\ne p_2$. Consider $X,Y$ with following distributions: 
+$X\sim Bernoulli(p)$, i.e. 
+$$\IP(X=1)=1-\IP(X=0)=p,$$
+and $Y\sim Bernoulli(p_1)$ given $X=1$, while $Y\sim Bernoulli(p_2)$ given $X=0$. Therefore, 
+$$\E(Y|X)=p_1\cdot X+p_2\cdot(1-X),$$
+$$\varepsilon:=Y-\E(Y|X)=Y-[p_1\cdot X+p_2\cdot(1-X)].$$
+The conditional distribution of $\varepsilon$ is
+$$\IP(\varepsilon=1-p_1|X=1)=1-\IP(\varepsilon=-p_1|X=1)=p_1,$$
+and  
+$$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
+\textcolor{red}{$X$ and $\varepsilon$ are not independent, but uncorrelated.}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Counterexample(continue)}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+    By the law of total probability, 
+    \begin{equation*}
+        \varepsilon=\begin{cases}
+            1-p_1,~~~&\mathrm{w.p.}~~p_1p,\\
+            -p_1,~~~&\mathrm{w.p.}~~(1-p_1)p,\\
+            1-p_2,~~~&\mathrm{w.p.}~~p_2(1-p),\\
+            -p_2,~~~&\mathrm{w.p.}~~(1-p_2)(1-p),
+        \end{cases}
+    \end{equation*}
+ and  $\E(\varepsilon)=0$. Hence, we have 
+   \begin{eqnarray*}
+    \cov(X,\varepsilon)&=&\E(X\varepsilon)\\
+    &=&p\E(\varepsilon|X=1)\\
+    &=&p[(1-p_1)p_1+(-p_1)(1-p_1)]\\
+    &=&0.
+   \end{eqnarray*}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{A recap for probability theory}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+   \large
+\begin{defi}
+    Random variables $X_1,\dots,X_n$ are called {\bf independent} if ~$\forall B_1,\dots,B_n\in\mathcal{B}(\R),$
+    $$\IP(X_1\in B_1,\dots,X_n\in B_n)=\prod_{i=1}^n\IP(X_i\in B_i).$$
+\end{defi}
+   The correlation between $X$ and $Y$ with $\Var(X),$ $\Var(Y)>0$ is 
+   $$\corr(X,Y)=\frac{\cov(X,Y)}{\sqrt{\var(X)\var(Y)}}.$$
+   When the correlation is zero, one says the RVs are uncorrelated, which is NOT the same as {\bf independent}. Note 
+   $$\Var(X+Y)=\Var(X)+\Var(Y)~~\Leftrightarrow~~\cov(X,Y)=0.$$
+ Again, independence implies uncorrelated, but not the other way around: uncorrelated RVs don't need to be independent! (See the counterexample!)
+   
+   \vskip 5pt
+   But for Gaussian $(X,Y)$, it's the same, i.e. {\it independent} is equivalent to {\it uncorrelated}. 
+\end{minipage}
+
+
+
+
+
+
+
+\newpage
+\bibliographystyle{apalike}
+% \bibliography{../ref}
+\begin{thebibliography}{}
+
+    \bibitem[Hall, 2013]{Hall13}
+    Hall, P. (2013).
+    \newblock {\em The bootstrap and Edgeworth expansion}.
+    \newblock Springer Series in Statistics. Springer New York, NY.
+    
+    \bibitem[H{\"a}rdle et~al., 2004]{hardle04}
+    H{\"a}rdle, W., M{\"u}ller, M., Sperlich, S., Werwatz, A., et~al. (2004).
+    \newblock {\em Nonparametric and semiparametric models}, volume~1 of {\em Springer Series in Statistics}.
+    \newblock Springer Berlin, Heidelberg.
+    
+    \bibitem[Kloke et~al., 2015]{kloke14}
+    Kloke, J., McKean, J.~W., and McKean, J.~W. (2015).
+    \newblock {\em Nonparametric statistical methods using R}.
+    \newblock Chapman and Hall/CRC, 1st ed edition.
+    
+    \bibitem[Schmidt et~al., 1981]{schmidt81}
+    Schmidt, G., Mattern, R., and Sch{\"u}ler, F. (1981).
+    \newblock Biomechanical investigation to determine physical and traumatological differentiation criteria for the maximum load capacity of head and vertebral column with and without protective helmet under the effects of impact.
+    \newblock {\em EEC Research Program on Biomechanics of Impacts, Final report, Phase III, Project G}, 5.
+    
+    \bibitem[Silverman, 1985]{Silverman85a}
+    Silverman, B.~W. (1985).
+    \newblock Some aspects of the spline smoothing approach to non-parametric regression curve fitting.
+    \newblock {\em Journal of the Royal Statistical Society: Series B (Methodological)}, 47(1):1--21.
+    
+    \bibitem[Takezawa, 2005]{takezawa05}
+    Takezawa, K. (2005).
+    \newblock {\em Introduction to nonparametric regression}.
+    \newblock Wiley Series in Probability and Statistics. John Wiley \& Sons.
+    
+    \end{thebibliography}
+\end{document}
