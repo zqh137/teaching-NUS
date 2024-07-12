@@ -53,6 +53,7 @@
 \DeclareMathOperator{\var}{\mathrm{Var}}
 \DeclareMathOperator{\cov}{\mathrm{Cov}}
 \DeclareMathOperator{\corr}{\mathrm{Corr}}
+\DeclareMathOperator{\bs}{\mathrm{Bias}}
 \DeclareMathOperator{\bigo}{\mathrm{O}}
 \newcommand{\K}{\textbf{Ker}}
 \newcommand{\Id}{\textbf{Id}}
@@ -146,29 +147,76 @@ Let $X$ be a continuous random variable with cumulative distribution function (c
 (Both c.d.f. and p.d.f. characterize the distribution.)
 In practice, the distribution of $X$ is in general unknown. All you have are $n$ observations $X_1,\dots,X_n$ of $X$, in other words, i.i.d. samples with size $n$. 
 \vskip 10pt
-{\bf Problem:}~~~How do you estimate $f(x)$, for all $x\in\R$, using those samples? 
+{\bf Problem:}~~~How do you estimate $f(\cdot)$ using those samples? 
 \vskip 5pt
-Note, we don't assume that $f(x)$ has some known functional form except for some unknown parameter(s) that need to be estimated. (That is exactly the parametric approach.)
+Note, we don't assume that $f(\cdot)$ has some known functional form except for some unknown parameter(s) that need to be estimated. (That is exactly the parametric approach.)
 \vskip 5pt
-We will focus on nonparametric ways of estimating $f(x)$ instead. 
-\vskip 5pt
-The histogram is the oldest and the most commonly used nonparametric density estimator.
+We will focus on nonparametric ways of estimating $f(\cdot)$ instead. 
 % In one hand, we know from second-year probability theory,
 % \begin{equation}
 %     f(x)=\frac{\mathrm{d}F(x)}{\mathrm{d}x}=\lim_{h\to0}\frac{F(x+h)-F(x-h)}{2h}
 % \end{equation}
 \end{minipage}
+
 \newpage
-{\LARGE\centerline{\textbf{Pros and Cons of Parametric method}}}
+{\LARGE\centerline{\textbf{Empirical distribution function}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large The simplest function to estimate nonparametrically is the c.d.f. $F$ of random variable $X$. 
+From elementary probability theory, the {\it empirical distribution function} (EDF), defined as, for any $x\in\R$, 
+\begin{equation}
+    F_n(x):=\frac1n\sum_{i=1}^n\bone_{\{X_i\le x\}},
+\end{equation}
+is a straightforward estimator for $F(x)$. 
+\vskip 5pt
+For any fixed $x\in\R$, $\bone_{\{X_i\le x\}}$ is a Bernoulli RV with mean $F(x)$. As a consequence, $F_n(x)$ is a RV with mean 
+\begin{equation*}
+    \E[F_n(x)]=\E\left(\bone_{\{X_1\le x\}}\right)=\IP(X_1\le x)=F(x),
+\end{equation*}
+and variance 
+\begin{equation*}
+    \Var(F_n(x))=\frac1{n^2}\cdot n\Var(\bone_{\{X_i\le x\}})=\frac1nF(x)\left(1-F(x)\right).
+\end{equation*}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{A native estimator}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+    Therefore, $F_n(x)$ is a {\it consistent unbiased} estimator of $F(x)$. 
+
+    \vskip 5pt
+    In particular, EDF allocates equal weight $n^{-1}$ on each datum point.
+    \vskip 5pt
+    On the other hand, inspired by EDF, it is easy to write 
+    \begin{eqnarray*}
+        f(x)&=&\lim_{h\to0}\frac{F(x+h)-F(x-h)}{2h}\\
+        &=&\lim_{h\to0}\frac{\E\left[\bone_{\{x-h<X_i\le x+h\}}\right]}{2h}\\
+        &=&\lim_{h\to0}\E\left[\frac{\sum_{i=1}^n\bone_{\{x-h<X_i\le x+h\}}}{2nh}\right].
+    \end{eqnarray*}
+    Hence, we obtain a {\it native estimator} for the density function $f(\cdot)$, 
+\begin{equation}\label{def-nat}
+    \hat{f}_n(x):=\frac1{2nh}\sum_{i=1}^n\bone_{\{x-h<X_i\le x+h\}},
+\end{equation}
+    for some $h>0$ small. 
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Histogram Estimator}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
+The histogram is the oldest and the most commonly used nonparametric density estimator. The construction of histogram is almost the same as the naive estimator.  
 \begin{itemize}
-\item The most popular parametric method of inference (estimation, test hypotheses and confidence intervals) is based on Fisher's maximum likelihood (ML).
-\item The maximum likelihood estimation usually achieves the optimal efficiency of estimation as described by its variance property.
-\item If the specified parametric model is wrong or far away from the true model, estimating the parametric model (MLE etc) may lead to very inaccurate results. 
-
+   \item Choose an origin $x_0$, and {\it binwidth} $h>0$;
+   \item Denote the {\it bins} of the histogram as 
+   $$B_j:=[x_0+jh,x_0+(j+1)h),~~~j\in\Z.$$
 \end{itemize}
+The histogram is given by 
+\begin{equation}\label{def-hist}
+    \widehat{f}_h(x):=\frac1{nh}\sum_{i=1}^n\sum_{j}\bone_{\{X_i\in B_j\}}\bone_{\{x\in B_j\}}.
+\end{equation}
 \end{minipage}
 % \newpage
 % {\LARGE{\textbf{Parametric Modeling}}}
@@ -181,16 +229,19 @@ The histogram is the oldest and the most commonly used nonparametric density est
 % \end{figure}
 
 \newpage
-{\LARGE{\textbf{Parametric Modelling}}}
+{\LARGE{\textbf{Comparsion of Naive and Histogram}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
-    \Large{The motocycle date from \cite{Silverman85a}. More details about the experiment can be found in \cite{schmidt81}.}
+    \Large 
+    We may assume  $x_0=0,$ and $x\in B_j=[jh,(j+1)h]$, without loss of generality (w.l.o.g.), and rewrite \eqref{def-hist} as  
+    \begin{equation}\label{refine-hist}
+        \widehat{f}_h(x):=\frac1{nh}\sum_{i=1}^n\bone_{\{X_i\in B_j\}}.
+    \end{equation}
+    Comparing \eqref{def-nat} with \eqref{refine-hist}, we can see 
     % \Large
 \begin{itemize}
-\item Collected to study the crashed effects after the motorcycles hit by a stimulated impact. 
-\item Dependent variables: time after a stimulated impact with motorcycles
-\item Response variables: head acceleration of a PTMO (post mortem human test object), capturing the crash effects
-
+\item The naive estimator is defined in a pointwise manner. For each $x$ fixed, take a neighborhood of $x$ with fixed radius $h$.
+\item Bins appeared in \eqref{def-hist} is independent of $x$, and purely determined by the selection of origin $x_0$ and binwidth $h$.
 \end{itemize}
 \end{minipage}
 
@@ -217,44 +268,91 @@ The histogram is the oldest and the most commonly used nonparametric density est
 % \end{figure}
 
 \newpage
-{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+{\LARGE\centerline{\textbf{Statistical Properties}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
-
-Nonparametric inference requires weaker assumptions, for instance, 
-\vfill
-\begin{itemize}
-\item $X_1,\dots,X_n$ are i.i.d. and $\E(X_1^2)<\infty$;
-\item Or $X_1,\dots,X_n$ are i.i.d. with the $r$-th derivative $f^{(r)}(x)$ of the density exists, for certain $r>0$;
-\item No assumptions about specific forms of the density $f$.
-\end{itemize}
+    \begin{itemize}
+        \item Bias: 
+        \begin{eqnarray}
+            \bs\left\{\widehat{f}_h(x)\right\}&=&\E\left[\widehat{f}_h(x)\right]-f(x)\nonumber\\
+            &=&h^{-1}\IP\left(X_1\in B_j\right)-f(x)\nonumber\\
+            &=&\frac1h\int_{B_j}f(u)\mathrm{d}u-f(x)\nonumber\\
+            &=&f(u^*)-f(x),\label{bs-mvt}
+        \end{eqnarray}
+        where the last equity is due to the Mean Value Theorem for some $u^*\in B_j$. 
+    \end{itemize}
+Intuitively, we may think the bias will vanish as the binwidth $h\to0$. Nope. We need certain {\bf stronger} condition on the density function $f(\cdot)$ to ensure this. So far, we only assume the existence of $f(\cdot)$.
 \end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+{\LARGE\centerline{\textbf{Statistical Properties (cont.)}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
-\begin{itemize}
-\item That makes the results more widely applicable and models more robust, i.e. nonparametric regression estimators are very flexible.
-\item From the viewpoint of nonparametric approach, all the parametric models are too rigid. 
-\item There are situations when a workable parametric model is difficult to establish, for example, in biased sampling. 
-\item But their statistical precision decreases greatly if several explanatory variables are included in the model, a.k.a. {\it the curse of dimensionality}.
-\end{itemize}
+    \begin{itemize}
+        \item Variance:
+        \begin{eqnarray}
+            \var\left(\widehat{f}_h(x)\right)&=&\frac1{(nh)^2}\var\left(\sum_{i=1}^n\bone_{\{X_i\in B_j\}}\right)\nonumber\\
+            &=&(nh^2)^{-1}\var\left(\bone_{\{X_1\in B_j\}}\right)\nonumber\\
+            &=&(nh^2)^{-1}p_x(1-p_x)\\
+            &=&(nh)^{-1}f(u^*)(1-p_x)\label{var-bound1}
+        \end{eqnarray}
+        where $p_x:=\int_{B_j}f(u)\mathrm{d}u$.
+    \end{itemize}
+From the last equality, it is not difficult to see that for $n$ fixed 
+$$\var\left(\widehat{f}_h(x)\right)\to\infty,~~~~\mathrm{as}~~~h\to0.$$ 
+\end{minipage}
 
+
+\newpage
+{\LARGE\centerline{\textbf{Continuity condition and MSE}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large
+        For a function $g:\R\to\R$, suppose that for any $x,y\in\R$, it holds 
+        \begin{equation}
+            |g(x)-g(y)|\le K|x-y|^\alpha,
+        \end{equation}
+        for some $\alpha>0$. 
+        For $\alpha=1$, such functions are called {\it Lipschitz functions}. For $0<\alpha<1$, they are said to satisfy a {\it H\"older condition} of order $\alpha$, c.f.\cite[Page~56]{Dudley02}. 
+\vskip 5pt
+        For a function $g$ defined on a finite interval $[a,b]$ with $a<b$, 
+        $$\mathrm{Lipschitz~continous}\Rightarrow \mathrm{H\ddot{o}lder~continuous}\Rightarrow \mathrm{uniformly~continuous}.$$
+Mean Square Error (MSE) of $\widehat{f}_h(x)$, defined by 
+\begin{eqnarray}
+    {\rm MSE}\left\{\widehat{f}_h(x)\right\}:=\E\left[\left|\widehat{f}_h(x)-f(x)\right|^2\right],
+\end{eqnarray}
+is a widely used performance measure of an estimator. 
 \end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{Summary}}}
+{\LARGE\centerline{\textbf{Main Theorem}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
-    \Large
-\begin{itemize}
-\item Parametric models are fully determined up to one or more parameters. The statistical accuracy is guaranteed by the correctness of the underlying assumptions. 
-\item Nonparametric models avoid using restrictive assumptions of the functional form of the regression function. However, they become difficult to interpret and yield inaccurate estimates if the number of regressors is large. 
-\end{itemize}
-
+    \large
+\begin{thm}
+    Suppose the density function $f$ is Lipschitz continuous on the interval $B_j$. When $n^{-1}\ll h\ll1$, the histogram $\widehat{f}_h(x)$ converges to $f(x)$, in the mean square sense,  i.e. 
+    \begin{equation}
+        {\rm MSE}\left\{\widehat{f}_h(x)\right\}\to0,
+    \end{equation}
+    as $n\to\infty$.
+\end{thm}
+\begin{proof}
+    Since $f$ is Lipschitz continuous on $B_j$, from \eqref{bs-mvt}, we have
+    \begin{equation}\label{bs-bound}
+        \left|\bs\left\{\widehat{f}_h(x)\right\}\right|=\left|f(u^*)-f(x)\right|\le K|u^*-x|\le Kh.
+    \end{equation}
+    Furthermore, from \eqref{var-bound1}, we have 
+    \begin{equation}\label{var-bound2}
+        \var\left(\widehat{f}_h(x)\right)\le C(nh)^{-1}
+    \end{equation} for some constant $C$, 
+    as $f$ is bounded on $B_j$, implied by the Lipschitz continuity. Combining \eqref{bs-bound} with \eqref{var-bound2}, we have
+    \begin{equation} 
+        {\rm MSE}\left\{\widehat{f}_h(x)\right\} =\left(\bs\left\{\widehat{f}_h(x)\right\}\right)^2+\var\left(\widehat{f}_h(x)\right)\le K^2h^2+C(nh)^{-1}\to0.
+    \end{equation}
+\end{proof}
+{\small An easy trick: $E(X-a)^2=\E(X-\E(X)+\E(X)-a)^2=\Var(X)+(\E(X)-a)^2$.}
 \end{minipage}
 
 \newpage
@@ -378,22 +476,27 @@ $$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
 \end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{A recap for probability theory}}}
+{\LARGE\centerline{\textbf{Landau's symbol}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
-   \large
-\begin{defi}
-    Random variables $X_1,\dots,X_n$ are called {\bf independent} if ~$\forall B_1,\dots,B_n\in\mathcal{B}(\R),$
-    $$\IP(X_1\in B_1,\dots,X_n\in B_n)=\prod_{i=1}^n\IP(X_i\in B_i).$$
-\end{defi}
-   The correlation between $X$ and $Y$ with $\Var(X),$ $\Var(Y)>0$ is 
-   $$\corr(X,Y)=\frac{\cov(X,Y)}{\sqrt{\var(X)\var(Y)}}.$$
-   When the correlation is zero, one says the RVs are uncorrelated, which is NOT the same as {\bf independent}. Note 
-   $$\Var(X+Y)=\Var(X)+\Var(Y)~~\Leftrightarrow~~\cov(X,Y)=0.$$
- Again, independence implies uncorrelated, but not the other way around: uncorrelated RVs don't need to be independent! (See the counterexample!)
-   
-   \vskip 5pt
-   But for Gaussian $(X,Y)$, it's the same, i.e. {\it independent} is equivalent to {\it uncorrelated}. 
+   \Large
+   We also recall the following standard notation for the asymptotic behavior of the relative order of magnitude of two functions $f(n)$ and $g(n )>0$ as $n$ tends to infinity.
+   We write
+   \begin{itemize}
+      \item
+        $f(n)=O(g(n))$,
+        or $f(n ) \lesssim g(n )$, if $\limsup_{n \to\infty} f(n ) / g(n ) <\infty$;
+      \item
+        $f(n)=\Omega(g(n ))$, or 
+        $f(n ) \gtrsim g(n )$, if $\liminf_{n \to\infty} f(n) / g(n)>0$;
+    % \item       $f(\lambda )=\Theta(g(\lambda ))$ if $f(\lambda )=O(g(\lambda ))$ and $f(\lambda )=\Omega(g(\lambda ))$, 
+      \item $f(n)\asymp g(n)$ if $f(n)=O(g(n))$ and $f(n)=\Omega(g(n))$; % if $f(\lambda )=\Theta(g(\lambda ))$;
+  % \item $f(\lambda )\sim g(\lambda )$ if $\lim_{\lambda \to \infty} f(\lambda )/g(\lambda ) = 1$, 
+     \item $f(n)=o(g(n))$, if $f(n)/g(n)\to 0$;
+  %    \item $f(x)\ll g(x)$, or $g(x)\gg f(x)$ if $f(x)\ge0$ and $f(x)=o(g(x))$.
+      \item $f(n)\ll g(n)$, or $g(n)\gg f(n)$, if $f(n)\ge0$ and $f(n)/g(n)\to 0$.
+  \end{itemize}
+  Find more details in this Wikipedia page of \href{https://en.wikipedia.org/wiki/Big_O_notation#History_(Bachmann–Landau,_Hardy,_and_Vinogradov_notations)}{Big O notation}.
 \end{minipage}
 
 
@@ -404,38 +507,38 @@ $$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
 
 \newpage
 \bibliographystyle{apalike}
-% \bibliography{../ref}
-\begin{thebibliography}{}
+\bibliography{../ref}
+% \begin{thebibliography}{}
 
-    \bibitem[Hall, 2013]{Hall13}
-    Hall, P. (2013).
-    \newblock {\em The bootstrap and Edgeworth expansion}.
-    \newblock Springer Series in Statistics. Springer New York, NY.
+%     \bibitem[Hall, 2013]{Hall13}
+%     Hall, P. (2013).
+%     \newblock {\em The bootstrap and Edgeworth expansion}.
+%     \newblock Springer Series in Statistics. Springer New York, NY.
     
-    \bibitem[H{\"a}rdle et~al., 2004]{hardle04}
-    H{\"a}rdle, W., M{\"u}ller, M., Sperlich, S., Werwatz, A., et~al. (2004).
-    \newblock {\em Nonparametric and semiparametric models}, volume~1 of {\em Springer Series in Statistics}.
-    \newblock Springer Berlin, Heidelberg.
+%     \bibitem[H{\"a}rdle et~al., 2004]{hardle04}
+%     H{\"a}rdle, W., M{\"u}ller, M., Sperlich, S., Werwatz, A., et~al. (2004).
+%     \newblock {\em Nonparametric and semiparametric models}, volume~1 of {\em Springer Series in Statistics}.
+%     \newblock Springer Berlin, Heidelberg.
     
-    \bibitem[Kloke et~al., 2015]{kloke14}
-    Kloke, J., McKean, J.~W., and McKean, J.~W. (2015).
-    \newblock {\em Nonparametric statistical methods using R}.
-    \newblock Chapman and Hall/CRC, 1st ed edition.
+%     \bibitem[Kloke et~al., 2015]{kloke14}
+%     Kloke, J., McKean, J.~W., and McKean, J.~W. (2015).
+%     \newblock {\em Nonparametric statistical methods using R}.
+%     \newblock Chapman and Hall/CRC, 1st ed edition.
     
-    \bibitem[Schmidt et~al., 1981]{schmidt81}
-    Schmidt, G., Mattern, R., and Sch{\"u}ler, F. (1981).
-    \newblock Biomechanical investigation to determine physical and traumatological differentiation criteria for the maximum load capacity of head and vertebral column with and without protective helmet under the effects of impact.
-    \newblock {\em EEC Research Program on Biomechanics of Impacts, Final report, Phase III, Project G}, 5.
+%     \bibitem[Schmidt et~al., 1981]{schmidt81}
+%     Schmidt, G., Mattern, R., and Sch{\"u}ler, F. (1981).
+%     \newblock Biomechanical investigation to determine physical and traumatological differentiation criteria for the maximum load capacity of head and vertebral column with and without protective helmet under the effects of impact.
+%     \newblock {\em EEC Research Program on Biomechanics of Impacts, Final report, Phase III, Project G}, 5.
     
-    \bibitem[Silverman, 1985]{Silverman85a}
-    Silverman, B.~W. (1985).
-    \newblock Some aspects of the spline smoothing approach to non-parametric regression curve fitting.
-    \newblock {\em Journal of the Royal Statistical Society: Series B (Methodological)}, 47(1):1--21.
+%     \bibitem[Silverman, 1985]{Silverman85a}
+%     Silverman, B.~W. (1985).
+%     \newblock Some aspects of the spline smoothing approach to non-parametric regression curve fitting.
+%     \newblock {\em Journal of the Royal Statistical Society: Series B (Methodological)}, 47(1):1--21.
     
-    \bibitem[Takezawa, 2005]{takezawa05}
-    Takezawa, K. (2005).
-    \newblock {\em Introduction to nonparametric regression}.
-    \newblock Wiley Series in Probability and Statistics. John Wiley \& Sons.
+%     \bibitem[Takezawa, 2005]{takezawa05}
+%     Takezawa, K. (2005).
+%     \newblock {\em Introduction to nonparametric regression}.
+%     \newblock Wiley Series in Probability and Statistics. John Wiley \& Sons.
     
-    \end{thebibliography}
+%     \end{thebibliography}
 \end{document}
