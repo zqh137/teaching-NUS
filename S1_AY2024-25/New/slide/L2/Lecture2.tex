@@ -331,7 +331,7 @@ is a widely used performance measure of an estimator.
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \large
-\begin{thm}
+\begin{thm}\label{thm1-L2}
     Suppose the density function $f$ is Lipschitz continuous on the interval $B_j$. When $n^{-1}\ll h\ll1$, the histogram $\widehat{f}_h(x)$ converges to $f(x)$, in the mean square sense,  i.e. 
     \begin{equation}
         {\rm MSE}\left\{\widehat{f}_h(x)\right\}\to0,
@@ -348,7 +348,7 @@ is a widely used performance measure of an estimator.
         \var\left(\widehat{f}_h(x)\right)\le C(nh)^{-1}
     \end{equation} for some constant $C$, 
     as $f$ is bounded on $B_j$, implied by the Lipschitz continuity. Combining \eqref{bs-bound} with \eqref{var-bound2}, we have
-    \begin{equation} 
+    \begin{equation} \label{bound-mse1}
         {\rm MSE}\left\{\widehat{f}_h(x)\right\} =\left(\bs\left\{\widehat{f}_h(x)\right\}\right)^2+\var\left(\widehat{f}_h(x)\right)\le K^2h^2+C(nh)^{-1}\to0.
     \end{equation}
 \end{proof}
@@ -356,21 +356,19 @@ is a widely used performance measure of an estimator.
 \end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{Nonparametric Methods}}}
+{\LARGE\centerline{\textbf{Selection of binwidth}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
-    \Large Can be classified as 
-\begin{enumerate}
-\item classical nonparametric methods, which are based on signs and ranks developed in 1940s--1970s;
-\item modern nonparametric methods, includes:
-\begin{itemize}
-    \item Smoothing methods, such as kernel, spline, orthogonal series for curve estimation, including density, regression curves. (Note: A curve can be regared as a parameter of infinite dimensions.)
-    \item The Jackknife, Bootstrap and other resampling methods. 
-\end{itemize}
-\end{enumerate}
-The course is mostly around the smoothing method and the curves we considered includes the density 
-    % $$f(x)=\frac{\mathrm{d}F(x)}{\mathrm{d}x},$$
-    and the conditional mean function.
+    \Large The binwidth $h$ is referred to be a {\it smoothing parameter} in the literature on smoothing. 
+
+    The inequality in \eqref{bound-mse1} summarizes the trade-off between bias and variance is determined by the choice of smoothing parameter. 
+
+    We can take the upper bound in \eqref{bound-mse1} as a function of $h$, and achieve its minimal point at $h_{\min}:=[C(2nK^2)^{-1}]^{1/3}$. 
+    
+    Plugging $h_{\min}$ in \eqref{bound-mse1}, we have
+    $${\rm MSE}\left\{\widehat{f}_h(x)\right\}=O\left(n^{-2/3}\right).$$
+    Note, if we assume $f$ satisfying H\"older condition of order $\alpha$, for some $0<\alpha<1$, instead of Lipschitz continuity in Theorem~\ref{thm1-L2}, we can obtain 
+    $${\rm MSE}\left\{\widehat{f}_h(x)\right\}=O\left(n^{-\frac{2\alpha}{2\alpha+1}}\right).$$
 \end{minipage}
 
 \newpage
