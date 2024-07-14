@@ -372,52 +372,41 @@ is a widely used performance measure of an estimator.
 \end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{A toy example}}}
+{\LARGE\centerline{\textbf{Bin number selection}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large 
-Suppose $\big\{(X_i,Y_i)\big\}_{i=1}^n$ is an i.i.d. sequence, with conditional mean function
-$$m(x)=\E(Y_i|X_i=x)$$ 
-and conditional variance $$\sigma^2(x)=\Var(Y_i|X_i=x).$$
-Consider the regression 
-\begin{equation}\label{L1-eq1}
-    Y_i=m(X_i)+\varepsilon_i.
-\end{equation}
-Apparently, we have 
-$$\E(\varepsilon_i|X_i)=0,$$ and
-$$\E(\varepsilon_i^2|X_i)=\Var(Y_i|X_i)=\sigma^2(X_i).$$
-Besides, $X_i$ and $\varepsilon_i$ are uncorrelated, i.e. orthogonal in $L^2$, but \textcolor{red}{not independent}.  (See the couterexample at the end of this slide.) 
-\end{minipage}
-
-\newpage
-{\LARGE{\textbf{Example: (continue)}}}
-\vskip25pt
-\begin{minipage}{.9\textwidth}
-    \Large 
-The model in \eqref{L1-eq1} is a nonparametric regression model with the following features:
 \begin{itemize}
-    \item Unspecified function form for the conditional mean function $m$;
-    \item Unspecified form for the distribution of $(X_i,Y_i)$ and $\varepsilon_i$;
-    \item Varying variance component $\sigma^2(X_i)$.
+    \item Sturges' rule, c.f. \cite{sturges26};
+    \item Doane's formula, c.f. \cite{doane76};
+    \item Scott's rule, c.f. \cite{scott79};
+    \item Freedman-Diaconis rule, c.f. \cite{FreedmanDiaconis81}. 
 \end{itemize}
-All of those features generalizes the parametric (linear and nonlinear) regression model to more general and practical setting. 
 \end{minipage}
 
 \newpage
-{\LARGE{\textbf{Nonparatric model}}}
+{\LARGE{\textbf{Sturges' rule}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+{\it Sturges' rule} is a method of selecting the number of bins for a histogram, being widely employed in statistical and data analysis software, including Python and R. 
+
+Originating from the idea that using (symmetric) binomial distribution to approximate discretized normal distribution, \cite{sturges26} considers an idealized histogram with $k$ bins, where the $i$-th bin count is binomial coefficient ${k-1 \choose i}$, for $i=0,1,\dots,k-1$. As $k$ increase, this ideal histogram approaches the shape of a normal density. 
+
+The total sample size is 
+$$n=\sum_{i=0}^{k-1}{k-1 \choose i}=(1+1)^{k-1}=2^{k-1},$$
+by the binomial formula. Sturges' rule for number of bins follows immediately:
+\begin{equation}\label{sturges-rule}
+    k=1+\log_2n.
+\end{equation}
+\end{minipage}
+
+\newpage
+{\LARGE{\textbf{Doane's rule}}}
 \vskip15pt
 \begin{minipage}{.9\textwidth}
     \Large 
-Let $g(x,y)$ be the joint p.d.f. of $(X,Y)$. (suppose it exists of course!) The marginal p.d.f. of $X$ is 
-$$f_X(x):=\int_{\R}g(x,y)\mathrm{d}y,$$
-and the conditional p.d.f. of $Y$ is 
-$$f_{Y|X}(y|x):=\frac{g(x,y)}{f_X(x)}.$$
-The conditional mean function is closely related with the marginal density of $X$, as 
-\begin{eqnarray*}
-    m(x):=\E(Y|X=x)=\int_{\R}yf_{Y|X}(y|x)\mathrm{d}y=\frac1{f_X(x)}\int_{\R}yg(x,y)\mathrm{d}y.
-\end{eqnarray*}
-
-This course will start with nonparametric density estimation, and then the nonparametric estimation of the conditional mean function. 
+If the data are not normal distributed, but are skewed, additional bins may be necessary. 
 \end{minipage}
 
 
@@ -433,44 +422,36 @@ This course will start with nonparametric density estimation, and then the nonpa
 % \end{figure}
 
 \newpage
-{\LARGE\centerline{\textbf{Counterexample}}}
+{\LARGE\centerline{\textbf{Convergence speed}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large 
-    Let $p,p_1,p_2\in(0,1)$ be some constants, and $p_1\ne p_2$. Consider $X,Y$ with following distributions: 
-$X\sim Bernoulli(p)$, i.e. 
-$$\IP(X=1)=1-\IP(X=0)=p,$$
-and $Y\sim Bernoulli(p_1)$ given $X=1$, while $Y\sim Bernoulli(p_2)$ given $X=0$. Therefore, 
-$$\E(Y|X)=p_1\cdot X+p_2\cdot(1-X),$$
-$$\varepsilon:=Y-\E(Y|X)=Y-[p_1\cdot X+p_2\cdot(1-X)].$$
-The conditional distribution of $\varepsilon$ is
-$$\IP(\varepsilon=1-p_1|X=1)=1-\IP(\varepsilon=-p_1|X=1)=p_1,$$
-and  
-$$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
-\textcolor{red}{$X$ and $\varepsilon$ are not independent, but uncorrelated.}
+    The optimal $O(n^{-2/3})$ for AMISE is unsatisfactorily slow, as \cite{boydsteele78} shows the best possible rate is $O(n^{-1})$ in the parametric approach. This deficiency can be regarded as the price for generality, i.e. removing parametric assumptions.  
 \end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{Counterexample(continue)}}}
+{\LARGE\centerline{\textbf{Cumulants}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
-    \Large 
-    By the law of total probability, 
+    \large 
+  \begin{itemize}
+    \item[$\blacktriangleright$] Moments and moment generating function (MGF)
     \begin{equation*}
-        \varepsilon=\begin{cases}
-            1-p_1,~~~&\mathrm{w.p.}~~p_1p,\\
-            -p_1,~~~&\mathrm{w.p.}~~(1-p_1)p,\\
-            1-p_2,~~~&\mathrm{w.p.}~~p_2(1-p),\\
-            -p_2,~~~&\mathrm{w.p.}~~(1-p_2)(1-p),
-        \end{cases}
+        \E\left(e^{tX}\right)=\sum_{n\ge0}\frac{t^n}{n!}\E(X^n).
     \end{equation*}
- and  $\E(\varepsilon)=0$. Hence, we have 
-   \begin{eqnarray*}
-    \cov(X,\varepsilon)&=&\E(X\varepsilon)\\
-    &=&p\E(\varepsilon|X=1)\\
-    &=&p[(1-p_1)p_1+(-p_1)(1-p_1)]\\
-    &=&0.
-   \end{eqnarray*}
+    \item[$\blacktriangleright$] $\log$-MGF: Cumulants and their generating function
+\begin{equation*}
+    \log\E\left(e^{tX}\right)=\sum_{n\ge0}\frac{t^n}{n!}\kappa_n(X).
+\end{equation*}
+    \item[$\blacktriangleright$] Cumulants to moments:
+\begin{eqnarray}
+    \kappa_1(X)&=&\E(X),\nonumber\\
+    \kappa_2(X)&=&\E[(X-\E[X])^2],\nonumber\\
+    \kappa_3(X)&=&\E[(X-\E[X])^3],\nonumber\\
+    \kappa_4(X)&=&\E[(X-\E[X])^4]-3(\E[(X-\E[X])^2])^2.\nonumber
+\end{eqnarray}
+    \item[$\blacktriangleright$] Skewness  $\kappa_3/\kappa_2^{3/2}$, and 
+  \end{itemize}
 \end{minipage}
 
 \newpage
