@@ -1,6 +1,7 @@
 \documentclass[19pt,landscaoe]{article}
 \usepackage[landscape]{geometry}
 \geometry{a5paper,scale=0.8}
+\usepackage{listings}
 %\geometry{left=1.5cm,right=1.5cm,top=1.5cm,bottom=0.5cm}
 \usepackage{color}
 % \usepackage{ulem} % for strikethrough
@@ -406,27 +407,114 @@ by the binomial formula. Sturges' rule for number of bins follows immediately:
 \vskip15pt
 \begin{minipage}{.9\textwidth}
     \Large 
-If the data are not normal distributed, but are skewed, additional bins may be necessary. 
+If the data are not normal distributed, but are skewed, additional bins may be necessary. \cite{doane76} proposes increases the number of bins in \eqref{sturges-rule} by 
+\begin{equation}\label{doane-rule}    k=\log_2(1+\hat{\gamma}_3\sqrt{n/6}),
+\end{equation}
+where 
+$$\hat{\gamma}_3=\frac{n^{-1}\sum_{i=1}^n(x_i-\bar{x})^3}{(n^{-1}\sum_{i=1}^n(x_i-\bar{x})^2)^{3/2}}$$
+is an estimate of the standardized skewness coefficient. 
 \end{minipage}
 
+\newpage
+{\LARGE{\textbf{Mean Integrated Squared Error}}}
+\vskip15pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+Instead of focusing on the accuracy of $\widehat{f}_h(x)$ as an estimator of $f$ at one single point, people are more likely to be interested in a global measure of accuracy. The most widely used global measure of estimation accuracy is the {\it mean integrated squared error} (MISE), 
+\begin{eqnarray}
+    {\rm MISE}\{\widehat{f}_h\}&:=&\E\left[\int_{\R}\left(\widehat{f}_h(x)-f(x)\right)^2\mathrm{d}x\right]\\
+&=&\int_{\R}\E\left[\left(\widehat{f}_h(x)-f(x)\right)^2\right]\mathrm{d}x\nonumber\\
+&=&\int_{\R}{\rm MSE}\{\widehat{f}_h(x)\}\mathrm{d}x.
+\end{eqnarray}
 
-% \newpage
-% {\LARGE{\textbf{Nonparametric Modeling}}}
-% \vskip25pt
-% {\Large\bf{Regression Spline Fit}}
-
-% \begin{figure}[h]
-% \centering
-%       \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{splinefit.pdf}
-%     \label{figure4} 
-% \end{figure}
+\end{minipage}
 
 \newpage
-{\LARGE\centerline{\textbf{Convergence speed}}}
+{\LARGE{\textbf{Mean Integrated Squared Error (cont.)}}}
+\vskip15pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+    With stronger assumptions on the derivative $f'$, the asymptotic MISE is\footnote{See \cite[Section~3.2]{scott15} for more detailed analysis.}
+    $${\rm AMISE}(h)=\frac1{nh}+\frac1{12}h^2\|f'\|_2^2.$$
+    Hence, as we did for \eqref{bound-mse1}, minimizing at $h^*=\left[\frac6{n\|f'\|_2^2}\right]^{1/3}$, 
+    \begin{equation}
+    {\rm AMISE}(h^*)=(3\|f'\|_2/4)^{2/3}n^{-2/3}.
+    \end{equation}
+    Taking the density of normal distribution $\mathcal{N}(\mu,\sigma^2)$ as a reference, $\|f'\|_2^2=(4\sqrt{\pi}\sigma)^{-1}$
+    \begin{equation}
+        h^*=(24\sqrt{\pi})^{1/3}\sigma n^{-1/3}\approx 3.5\sigma n^{-1/3}.
+        \end{equation}
+        \begin{itemize}
+            \item Scott's rule: $\hat{h}=3.5\hat{\sigma}n^{-1/3}$;
+            \item Freedman-Diaconis's rule: $\hat{h}=2({\rm IQR})n^{-1/3},$ where ${\rm IQR}$ is the interquartile range. 
+        \end{itemize}
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Summary}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large 
     The optimal $O(n^{-2/3})$ for AMISE is unsatisfactorily slow, as \cite{boydsteele78} shows the best possible rate is $O(n^{-1})$ in the parametric approach. This deficiency can be regarded as the price for generality, i.e. removing parametric assumptions.  
+\end{minipage}
+
+
+\newpage
+{\LARGE{\textbf{Histogram in R}}}
+\vskip25pt
+
+\begin{figure}[h]
+\centering
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{temperature.eps}
+    \label{figure5} 
+\end{figure}
+(Data source: built-in dataset airquality which has "Daily air quality measurements in New York, May to September 1973" -R documentation.)
+\newpage
+{\LARGE{\textbf{Histogram of house prices using Sturges' Rule}}}
+\vskip25pt
+
+\begin{figure}[h]
+\centering
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{hist_housing_default.eps}
+    \label{figure6} 
+\end{figure}
+(Data source: \href{https://raw.githubusercontent.com/rashida048/Datasets/master/home_data.csv}{House Data}, \textcolor{red}{breaks = "Sturges"})
+
+\newpage
+{\LARGE{\textbf{Histogram of house prices using Scott's Rule}}}
+\vskip25pt
+
+\begin{figure}[h]
+\centering
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{hist_housing_Scott.eps}
+    \label{6} 
+\end{figure}
+(Data source: \href{https://raw.githubusercontent.com/rashida048/Datasets/master/home_data.csv}{House Data}, \textcolor{red}{breaks = "Scott"})
+
+\newpage
+{\LARGE{\textbf{Histogram of house prices using Freedman-Diaconis's Rule}}}
+\vskip25pt
+
+\begin{figure}[h]
+\centering
+      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{hist_housing_Freedman.eps}
+    \label{figure7} 
+\end{figure}
+(Data source: \href{https://raw.githubusercontent.com/rashida048/Datasets/master/home_data.csv}{House Data}, \textcolor{red}{breaks = "Freedman-Diaconis"})
+
+\newpage
+{\LARGE\centerline{\textbf{Consistency}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large 
+\begin{defi}[\cite{garthwaite02}]
+    An estimator $\hat{\theta}$ for $\theta$ is (weakly) consistent if $\IP(|\hat{\theta}-\theta|>\epsilon)\to0$ as $n\to\infty$ for any $epsilon>0$, i.e. $\hat{\theta}$ converges to $\theta$ in probability.
+\end{defi} 
+{\bf Claim:} ${\rm MSE}\{\hat{\theta}\}\to0$ implies consistency. 
+\begin{eqnarray*}
+    \IP(|\hat{\theta}-\theta|>\epsilon)=\E\left[\bone_{\{|\hat{\theta}-\theta|>\epsilon\}}\right]&\le&\E\left[\frac{|\hat{\theta}-\theta|^2}{\epsilon^2}\bone_{\{|\hat{\theta}-\theta|>\epsilon\}}\right]\\
+    &\le&\epsilon^{-2}\E\left[|\hat{\theta}-\theta|^2\right].
+\end{eqnarray*}
 \end{minipage}
 
 \newpage
@@ -486,38 +574,49 @@ If the data are not normal distributed, but are skewed, additional bins may be n
 
 \newpage
 \bibliographystyle{apalike}
-\bibliography{../ref}
-% \begin{thebibliography}{}
+% \bibliography{../ref}
+\begin{thebibliography}{}
 
-%     \bibitem[Hall, 2013]{Hall13}
-%     Hall, P. (2013).
-%     \newblock {\em The bootstrap and Edgeworth expansion}.
-%     \newblock Springer Series in Statistics. Springer New York, NY.
+    \bibitem[Boyd and Steele, 1978]{boydsteele78}
+    Boyd, D.~W. and Steele, J.~M. (1978).
+    \newblock Lower bounds for nonparametric density estimation rates.
+    \newblock {\em Ann. Statist.}, 6(4):932--934.
     
-%     \bibitem[H{\"a}rdle et~al., 2004]{hardle04}
-%     H{\"a}rdle, W., M{\"u}ller, M., Sperlich, S., Werwatz, A., et~al. (2004).
-%     \newblock {\em Nonparametric and semiparametric models}, volume~1 of {\em Springer Series in Statistics}.
-%     \newblock Springer Berlin, Heidelberg.
+    \bibitem[Doane, 1976]{doane76}
+    Doane, D.~P. (1976).
+    \newblock Aesthetic frequency classifications.
+    \newblock {\em Amer. Statist.}, 30(4):181--183.
     
-%     \bibitem[Kloke et~al., 2015]{kloke14}
-%     Kloke, J., McKean, J.~W., and McKean, J.~W. (2015).
-%     \newblock {\em Nonparametric statistical methods using R}.
-%     \newblock Chapman and Hall/CRC, 1st ed edition.
+    \bibitem[Dudley, 2002]{Dudley02}
+    Dudley, R.~M. (2002).
+    \newblock {\em Real Analysis and Probability}.
+    \newblock Cambridge Studies in Advanced Mathematics. Cambridge University Press, Cambridge, 2 edition.
     
-%     \bibitem[Schmidt et~al., 1981]{schmidt81}
-%     Schmidt, G., Mattern, R., and Sch{\"u}ler, F. (1981).
-%     \newblock Biomechanical investigation to determine physical and traumatological differentiation criteria for the maximum load capacity of head and vertebral column with and without protective helmet under the effects of impact.
-%     \newblock {\em EEC Research Program on Biomechanics of Impacts, Final report, Phase III, Project G}, 5.
+    \bibitem[Freedman and Diaconis, 1981]{FreedmanDiaconis81}
+    Freedman, D. and Diaconis, P. (1981).
+    \newblock On the histogram as a density estimator: $L_2$ theory.
+    \newblock {\em Probab. Theory Related Fields}, 57(4):453--476.
     
-%     \bibitem[Silverman, 1985]{Silverman85a}
-%     Silverman, B.~W. (1985).
-%     \newblock Some aspects of the spline smoothing approach to non-parametric regression curve fitting.
-%     \newblock {\em Journal of the Royal Statistical Society: Series B (Methodological)}, 47(1):1--21.
+    \bibitem[Garthwaite et~al., 2002]{garthwaite02}
+    Garthwaite, P.~H., Jolliffe, I.~T., and Jones, B. (2002).
+    \newblock {\em Statistical inference}.
+    \newblock OUP Oxford.
     
-%     \bibitem[Takezawa, 2005]{takezawa05}
-%     Takezawa, K. (2005).
-%     \newblock {\em Introduction to nonparametric regression}.
-%     \newblock Wiley Series in Probability and Statistics. John Wiley \& Sons.
+    \bibitem[Scott, 1979]{scott79}
+    Scott, D.~W. (1979).
+    \newblock {On optimal and data-based histograms}.
+    \newblock {\em Biometrika}, 66(3):605--610.
     
-%     \end{thebibliography}
+    \bibitem[Scott, 2015]{scott15}
+    Scott, D.~W. (2015).
+    \newblock {\em Multivariate density estimation: theory, practice, and visualization}.
+    \newblock Wiley Series in Probability and Statistics. John Wiley \& Sons, 2nd edition.
+    
+    \bibitem[Sturges, 1926]{sturges26}
+    Sturges, H.~A. (1926).
+    \newblock The choice of a class interval.
+    \newblock {\em J. Amer. Statist. Assoc.}, 21(153):65--66.
+    
+    \end{thebibliography}
+    
 \end{document}
