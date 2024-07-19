@@ -6,6 +6,7 @@
 % \usepackage{ulem} % for strikethrough
 \usepackage{amsfonts}
 \usepackage{bm}
+\usepackage{Sweave}
 \usepackage{graphicx} 
 \usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
 % \usepackage[british]{babel}
@@ -133,7 +134,7 @@ National University of Singapore
 \item Consultation: via \href{mailto:liu_qw@nus.edu.sg}{ email} \& appointment via email
 \item a 2-hour lecture + 1-hour tutorial per week
 \item Homework
-\item Assessment: Final exam ($80\%$) + Assignments ($20\%$)
+\item Assessment: Final exam ($60\%$) + Assignments ($40\%$)
 \item Main reference are \cite{hardle04} \& \cite{scott15}. Some other reference books (not exclusively) include \cite{simonoff12}, \cite{takezawa05}, \cite{Hall13}, and \cite{kloke14}.
 
 \end{itemize}
@@ -143,14 +144,19 @@ National University of Singapore
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
-\begin{itemize}
-\item The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions in regression settings.
-\item {\it Smoothing} is a central idea in statistics and takes a role of extract structural elements of variable complexity from patterns of random variation. 
-\item Smoothing is a ``modern'' nonparametric method of statistical inference, as it grows up after the wide-spread of modern computer power. 
-\item A twin brother of the bootstrap, another computer intensive statistical
-method.
-
-\end{itemize}
+    The course is about various {\it smoothing} methods for estimating the probability density functions (p.d.f.) and the conditional mean functions (or regression)
+\begin{enumerate}[(i)]
+\item Get an overview of nonparametric methods
+\begin{enumerate}[a)]
+    \item Empirical distribution function;
+    \item density estimation
+    \item Nadaraya-Watson kernel regression;
+    \item and other methods...
+\end{enumerate}
+\item Understand the pros and cons of each methods
+\item Understand basic theories behind nonparametric methods
+\item R packages
+\end{enumerate}
 \end{minipage}
 \newpage
 {\Large\centerline{\textbf{Parametric v.s. Nonparametric}}}
@@ -165,79 +171,7 @@ $$F(x)=F_\theta(x)=F(x|\theta).$$
 One has to make prior assumptions about its functional form.
 \end{minipage}
 \newpage
-{\LARGE\centerline{\textbf{Pros and Cons of Parametric method}}}
-\vskip25pt
-\begin{minipage}{.9\textwidth}
-    \Large
-\begin{itemize}
-\item The most popular parametric method of inference (estimation, test hypotheses and confidence intervals) is based on Fisher's maximum likelihood (ML).
-\item The maximum likelihood estimation usually achieves the optimal efficiency of estimation as described by its variance property.
-\item If the specified parametric model is wrong or far away from the true model, estimating the parametric model (MLE etc) may lead to very inaccurate results. 
-
-\end{itemize}
-\end{minipage}
-\newpage
-{\LARGE{\textbf{Parametric Modeling}}}
-\vskip25pt
-{\Large\bf{Examples}}
-   
-\begin{figure}[h]
-% \begin{minipage}[t]{.4\linewidth}
-
-    %the four numbers after "trim=" are for left bottom right top
-      \includegraphics[width=0.8\textwidth,height=0.5\textwidth]{figure1.eps}
-    %  \caption{$N(\lambda_n,\sigma_n^2)$ without correction} %
-    \label{figure1} 
-
-% \end{minipage}
-\end{figure}
-
-\newpage
-{\LARGE{\textbf{Parametric Modelling}}}
-\vskip25pt
-\begin{minipage}{.9\textwidth}
-    \Large{The motocycle date from \cite{Silverman85a}. More details about the experiment can be found in \cite{schmidt81}.}
-    % \Large
-\begin{itemize}
-\item Collected to study the crashed effects after the motorcycles hit by a stimulated impact. 
-\item Dependent variables: time after a stimulated impact with motorcycles
-\item Response variables: head acceleration of a PTMO (post mortem human test object), capturing the crash effects
-
-\end{itemize}
-\end{minipage}
-
-\newpage
-{\LARGE{\textbf{Parametric Modeling}}}
-\vskip25pt
-{\Large\bf{Scatter plot of raw data}}
-
-\begin{figure}[h]
-% \begin{minipage}[t]{1\linewidth}
-\centering
-    %the four numbers after "trim=" are for left bottom right top
-      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{MotocycleData.eps}
-    \label{figure2} 
-
-% \end{minipage}
-\end{figure}
-
-\newpage
-{\LARGE{\textbf{Parametric Modeling}}}
-\vskip25pt
-{\Large\bf{Polynomial Fit}}
-
-\begin{figure}[h]
-% \begin{minipage}[t]{1\linewidth}
-\centering
-    %the four numbers after "trim=" are for left bottom right top
-      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{polyfitting.eps}
-    \label{figure3} 
-
-% \end{minipage}
-\end{figure}
-
-\newpage
-{\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
+{\LARGE\centerline{\textbf{Nonparametric approach }}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
@@ -253,14 +187,215 @@ More specifically, {\bf given} a parametric density family $f(x|\theta)$, e.g. n
 \end{minipage}
 
 \newpage
+{\LARGE\centerline{\textbf{Mathematical formulation of regressions}}}
+\vskip25pt
+\Large
+\begin{minipage}{.9\textwidth}
+    \begin{enumerate}[(A)]
+        \item response: $Y$; predictors (regressors, covariate): $X = (\mathbf{x}_1, ..., \mathbf{x}_p) $
+        \item The interest is to find
+        $
+         E(Y|X=x)
+        $
+        i.e. the mean of $ Y$ when $ X =x$.
+        \item Question: how to estimate $E(Y|X=x)$ if you can get whatever data $(X, Y)$?
+        \begin{enumerate}[(a)]
+        \item if you can repeatedly observe $ Y$ with $ X = x$?
+        \item if you CANNOT repeatedly observe $ Y$ with $ X = x$ (which is more practical)?  --- this is the interest of statistics, data science, and computer sciences,... it is also our interest of this module
+        
+        
+        \end{enumerate}
+        
+        \end{enumerate}
+        
+\end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{``Local'' and ``Global'' Approaches to the estimation}}}
+\vskip25pt
+\large
+% \begin{minipage}{.9\textwidth}
+    \begin{enumerate}[(A)]
+
+        \item Suppose we have observations $(X_i, y_i), i = 1, ..., n $
+        
+        \item ``Local'': if $ X=x $ is not repeatedly  observed, we can use those observations around $ x $: for example $ ||x_i - x|| \le h $, where $ h $ is small value and estimate
+            $$
+             \widehat{{E(Y|X=x)}} = \frac{1}{\#\{x_i: ||X_i - x|| \le h\}} \sum_{x_i: ||X_i - x|| \le h} Y_i
+            $$
+            where $ \#A $ denotes the number of elements in set A.\\
+
+            {\bf Example 1:} Motorcycle data, the crashed effects after the motorcycles hit by a stimulated impact.  X: time after a stimulated impact with motorcycles; Y: head acceleration of a PTMO (post mortem human test object), capturing the crash effects.
+            \begin{Schunk}
+            \begin{Sinput}
+library(MASS)
+y=mcycle$accel
+x=mcycle$times
+plot(x,y, col = "red", main = "Motocycle Data", sub = 
+"crashed effects after a stimulated impact", xlab = "Time",
+ ylab = "acceleration")
+            \end{Sinput}
+        \end{Schunk}
+        \begin{center}
+            \includegraphics[width=0.6\textwidth,height=0.5\textwidth]{MotocycleData.eps}
+        \end{center}
+            \item ``local" approach to multivariate regressors, when $p $ increases, the number of observations in the neighbor  $ ||x_i - x|| \le h $ decreases dramatically. This leads to the ``curse of dimensionality".
+            \item ``local" methods include
+            \begin{enumerate}[(a)]
+            
+            \item ``k-nearest neighbors" or kNN
+            
+            \item Nadaraya-Watson kernel smoothing and its extensions
+            
+            \item regression tree and Random Forest
+            
+            \end{enumerate}
+            \item ``global" approach assume
+$$
+E(Y|X=x)  = g(x, \beta)
+$$
+where $\beta$ is a set of parameters.
+
+\item Examples:
+
+\begin{enumerate}[(a)]
+
+\item polynomial regression model: $ E(Y|X=x) = \beta_0 + \beta_1 x  + ... + \beta_m x^m $;
+\begin{center}
+\includegraphics[width=0.6\textwidth,height=0.35\textwidth]{polyfitting.eps}
+\end{center}
+\item logistic regression model
+$$
+  E(y|x) = \frac{\exp(\beta_0 + \beta_1 x)}{1+\exp(\beta_0 + \beta_1 x)}
+$$
+Can you make this model more complicated?
+
+\textbf{Example}
+$$
+  E(y|x) = c_1 \frac{\exp(\beta^{1}_0 + \beta^{1}_1 x)}{1+\exp(\beta^{1}_0 + \beta^{1}_1 x)} + c_2 \frac{\exp(\beta^{2}_0 + \beta^{2}_1 x)}{1+\exp(\beta^{2}_0 + \beta^{2}_1 x)}
+$$
+ or more complicated?  ---leading to the ANN
+\item piece-wise linear: here we only consider univariate $ x $:
+$$ E(Y|X=x) = \beta_0 + \beta_1 (x-t_1)_+ + \beta_2 (x-t_2)_+  + ... + \beta_m (x-t_m)_+ $$
+Can you make this model more complicated?
+\begin{enumerate}[(i)]
+    \item Example 1:
+    $$ E(Y|X=x) = \beta_0 + \alpha_1 x + \alpha_2 x^2 + \beta_1 (x-t_1)^3_+ + \beta_2 (x-t_2)^3_+  + ... + \beta_m (x-t_m)^3_+ $$
+    or more complicated?  ---leading to the spline smoothing
+    
+    \item Example 2:
+    $$ E(Y|X=x) = \beta_0 + \alpha_1 \phi_1(x) + \beta_1 \phi_2(x) + ....  $$
+    where $ \phi_k(x), k = 1, 2, ... $ are a series of functions  ---leading to the Orthogonal Series Methods, including the wavelet, ...    
+    \end{enumerate}
+
+\end{enumerate}
+\item Roughly speaking\footnote{not a formal defition}, if the number of parameters is fixed, we call the model parametric model, if the number increases with $n$, we call it  nonparametric model
+
+\item "global" approaches to nonparametric regressions
+\begin{enumerate}[(a)]
+
+\item regression splines
+
+\centerline{\includegraphics[width=8cm]{splinefit.pdf}}
+
+\newpage 
+\item orthogonal series methods
+
+\item Reproducing kernel Hilbert space (RKHS) method
+
+\item Artificial neural network (ANN) and deep-learning
+
+\end{enumerate}
+
+\item for ``global" approaches to multivariate regression, the curse of dimensionality still exists, but some methods have the adaptivity to the complexity of the ``true" models.
+
+\end{enumerate}
+
+
+        
+% \end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Pros and Cons of Parametric method}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \Large Pros:
+\begin{enumerate}
+    \item Convenience: parametric models are generally easier to work with.
+
+    \item Efficiency: If a parametric model is correct, then parametric methods are more efficient than nonparametricmethods.
+
+    \item Interpretation: Sometimes parametric models are easier to interpret.
+
+\end{enumerate}
+Cons:
+\begin{enumerate}
+
+    \item Which model? Sometimes it is hard  to find a suitable parametric model.
+
+    \item    High risk of Mis-specification: leading to incorrect conclusion.
+
+    \item Outliers: Nonparametric methods are often less sensitive to outliers.
+
+  \end{enumerate}
+\end{minipage}
+
+% \newpage
+% {\LARGE{\textbf{Parametric Modelling}}}
+% \vskip25pt
+% \begin{minipage}{.9\textwidth}
+%     \Large{The motocycle date from \cite{Silverman85a}. More details about the experiment can be found in \cite{schmidt81}.}
+%     % \Large
+% \begin{itemize}
+% \item Collected to study the crashed effects after the motorcycles hit by a stimulated impact. 
+% \item Dependent variables: time after a stimulated impact with motorcycles
+% \item Response variables: head acceleration of a PTMO (post mortem human test object), capturing the crash effects
+
+% \end{itemize}
+% \end{minipage}
+
+% \newpage
+% {\LARGE{\textbf{Parametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Scatter plot of raw data}}
+
+% \begin{figure}[h]
+% % \begin{minipage}[t]{1\linewidth}
+% \centering
+%     %the four numbers after "trim=" are for left bottom right top
+%       \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{MotocycleData.eps}
+%     \label{figure2} 
+
+% % \end{minipage}
+% \end{figure}
+
+% \newpage
+% {\LARGE{\textbf{Parametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Polynomial Fit}}
+
+% \begin{figure}[h]
+% % \begin{minipage}[t]{1\linewidth}
+% \centering
+%     %the four numbers after "trim=" are for left bottom right top
+%       \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{polyfitting.eps}
+%     \label{figure3} 
+
+% % \end{minipage}
+% \end{figure}
+
+
+
+\newpage
 {\LARGE\centerline{\textbf{Pros and Cons of nonparametric method}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
 \begin{itemize}
-\item That makes the results more widely applicable and models more robust, i.e. nonparametric regression estimators are very flexible.
+\item That makes the results more widely applicable and models more robust, i.e. nonparametric regression estimators are very flexible. There are situations when a workable parametric model is difficult to establish, for example, in biased sampling.
 \item From the viewpoint of nonparametric approach, all the parametric models are too rigid. 
-\item There are situations when a workable parametric model is difficult to establish, for example, in biased sampling. 
+
+\item Are typically more computationally intensive, but, with our fast increasing computing power, have been made feasible and an attractive alternative to parametric methods.
 \item But their statistical precision decreases greatly if several explanatory variables are included in the model, a.k.a. {\it the curse of dimensionality}.
 \end{itemize}
 
@@ -346,20 +481,20 @@ This course will start with nonparametric density estimation, and then the nonpa
 \end{minipage}
 
 
-\newpage
-{\LARGE{\textbf{Nonparametric Modeling}}}
-\vskip25pt
-{\Large\bf{Regression Spline Fit}}
+% \newpage
+% {\LARGE{\textbf{Nonparametric Modeling}}}
+% \vskip25pt
+% {\Large\bf{Regression Spline Fit}}
 
-\begin{figure}[h]
-% \begin{minipage}[t]{1\linewidth}
-\centering
-    %the four numbers after "trim=" are for left bottom right top
-      \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{splinefit.pdf}
-    \label{figure4} 
+% \begin{figure}[h]
+% % \begin{minipage}[t]{1\linewidth}
+% \centering
+%     %the four numbers after "trim=" are for left bottom right top
+%       \includegraphics[width=0.75\textwidth,height=0.52\textwidth]{splinefit.pdf}
+%     \label{figure4} 
 
-% \end{minipage}
-\end{figure}
+% % \end{minipage}
+% \end{figure}
 \newpage
 {\LARGE\centerline{\textbf{Counterexample}}}
 \vskip25pt
@@ -420,13 +555,191 @@ $$\IP(\varepsilon=1-p_2|X=0)=1-\IP(\varepsilon=-p_2|X=0)=p_2.$$
    But for Gaussian $(X,Y)$, it's the same, i.e. {\it independent} is equivalent to {\it uncorrelated}. 
 \end{minipage}
 
+\newpage
+
+\newpage
+{\LARGE\centerline{\textbf{Appendix: Some Concepts}}}
+\vskip25pt
+% \begin{minipage}{.9\textwidth}
+   \large
+
+% \end{minipage}
 
 
+For a sequence $\left\{M_n\right\}$ of random variables, the following concepts are usually considered in statistical theory.
+
+\begin{itemize}
+
+
+\item \underline{\bf converge in mean square}
+
+\begin{itemize}
+
+\item Definition: if there is a random variable $ \xi $,such that
+$$
+\lim_{n\to \infty } \mathbb{E} (|M_n - \xi|^2)=0
+$$
+then we say that $ M_n $ converges to $ \xi $ in mean square. Denoted by
+$$
+M_n \stackrel{L^2}{\rightarrow} \xi
+$$
+
+\item \underline{\bf mean square consistent estimator}:  suppose $ \theta $ is a parameter (or a function), if $ M_n $ converges to $ \theta $ in mean square, then we say that $ M_n $ is a mean square consistent  estimator of $  \theta $
+
+
+\item  \underline{\bf (mean square) consistent rate}: If $M_n$ is a consistent estimator of $ \theta $,  and there exists an $ a_n \to 0 $ such that 
+$$
+  \mathbb{E} (|M_n - \xi|^2) = O(a_n^2),
+$$
+Then, we say that $a_n $ is the consistence rate of $ M_n$.
+
+\item Example 1: Suppose $ X_1, ..., X_n $ are i.i.d. samples from $ X $ with $ \E(X) = \mu $ and $ \Var(X) = \sigma^2 $. Then 
+    $$
+      \E [(\bar X - \mu)^2]  = \sigma^2/n  
+    $$
+    Thus, $ \bar X$ is a consistent estimator of $ \mu $ in mean square, and the consistency rate is $ 1/\sqrt{n} $, also called root-$n$ consistent.
+\item Example 2: The empirical distribution $\hat{F}_n(x)$ is an consistent estimator of $ F(x) $ in mean square and the consistency rate is $1/\sqrt{n}$, a.k.a. root-$n$ consistent.
+
+Proof: because
+$$
+    \mathbb{E}(\hat{F}_n(x)) = F(x)
+$$
+and 
+\begin{align*}
+  \mathbb{E}\left[ \left|\hat{F}_n(x) - F(x)\right|^2 \right] &= \Var(\hat{F}_n(x))\\
+  & = \frac{F(x)(1-F(x))}n \\
+  & \to 0,
+\end{align*}
+thus $\hat F_n(x)$ is a consistent estimator of $ F(x) $ in mean square.
+
+\newpage
+
+
+\item \underline{\textbf{MSE (mean squared error)}} If $ M_n $ is an estimator of $ \theta $, we also call $\E [(M_n - \theta)^2] $ the mean squared error,
+    \begin{align*}
+      {\rm MSE}(M_n) = \E [(M_n - \theta)^2] 
+    \end{align*}
+
+\item Therefore, if $ M_n $ is an estimator of $ \theta $ with MSE tends to 0, then $ M_n $ is an consistent estiamtor of $ \theta $ in mean square.
+    
+
+\item \underline{Decomposition of MSE} 
+    \begin{align*}
+      {\rm MSE}(M_n) &= \E [(M_n - \theta)^2] \\
+               & = \E [(M_n - \E M_n +E M_n- \theta)^2] \\
+               & = \E [(M_n - \E M_n)^2 + (\E M_n- \theta)^2 + 2 (M_n - \E M_n)(  \E M_n- \theta)]  \\
+               & = \E [(M_n - \E M_n)^2] + (\E M_n- \theta)^2   \\
+               &= \Var(M_n) + {\rm Bias}(M_n)^2
+    \end{align*}
+   
+
+\end{itemize}
+
+%\item By the fact above, $\hat F_n(x)$ is a consistent estimator of $ F(x) $ in probability.
 
 
 
 
 \newpage
+
+
+\item \underline{\bf convergence in probability}. 
+
+\begin{itemize}
+
+\item Definition: If  $ \xi $ is a random variable, and for all $\varepsilon>0$
+$$
+\lim _{n \rightarrow \infty} \mathbb{P}\left(\left|M_n-\xi \right|>\varepsilon\right)=0,
+$$
+then we say that $M_n$ converges to $ \xi $ in probability. Denoted by
+$$
+M_n \stackrel{p}{\rightarrow} \xi, \ \ \ 
+or
+\ \ \ 
+M_n {\rightarrow} \xi \ \ \  (i.p.).
+$$
+
+\item {\bf A basic fact}, if $M_n $ converges to $ \xi $ in mean squares, then $M_n $ also converges to $ \xi $ in probability. In fact, convergence in $L^p$ sense always implies convergence in probability, for any $p>0$. See \cite[Theorem~4.1.4]{chung00} for more details. 
+    
+    \begin{itemize}
+    
+    \item   Markov's (Chebyshev's) inequality: for any random variable $ X$, if the second moment exists, then
+    $$
+     \IP(|X|>\varepsilon) \le \frac{\E(X^2)}{\varepsilon^2}
+    $$
+    
+    \item replace $ X $ by $M_n - \xi $
+    $$
+     \IP(|M_n - \xi |>\varepsilon) \le \frac{\E(|M_n - \xi |^2)}{\varepsilon^2}
+    $$
+     
+    \item Thus $\E(|M_n - \xi |^2) \to 0$ implies the left hand side tends to 0
+    
+    \end{itemize} 
+
+\newpage
+
+\item \underline{\bf consistent estimator in probability}:  suppose $ \theta $ is a parameter (or a function), if $ M_n $ converges to $ \theta $ in probability, then we say that $ M_n $ is a consistent estimator of $
+\theta $ in probability. 
+
+\item Example: by the fact above, $ \bar X $  and $ \hat F_n(x) $  are consistent estimator of $ \mu $ and $ F(x) $ in probability, respectively.
+
+\end{itemize}
+\item  \underline{\bf convergence with probability 1} (w.p.1). If there exists an event $A\subseteq\Omega$ with $\IP(A)=1$ such that $\forall~\omega\in A$, we say that $ M_n $ converges to $ \xi $ with probability 1 (or almost surely)
+$$
+M_n \stackrel{a.s.}{\rightarrow} X.
+$$
+or 
+$$
+M_n {\rightarrow} X, \ \  a.s. .
+$$
+
+\item[] {\bf strong consistency of an estimator}:  suppose $ \theta $ is a parameter (or a function), if $ M_n $ converges to $ \theta $ a.s., then $ M_n $ is a strong consistent (or almost surely) estimator of $  \theta $.
+
+\item {\bf  converges in distribution}:
+\begin{itemize}
+  \item  Definition: 
+ if 
+$$
+\lim_{n\to \infty } \IP(M_n\le x) = \IP(\xi\le x)
+$$
+at all points $x\in\R$ where the c.d.f. $F_\xi(x):=\IP(\xi\le x)$ is continuous, 
+then we say that $ M_n $ converges to $ \xi$ in distribution, denoted by
+$$
+M_n \stackrel{d}{\rightarrow} \xi. 
+$$
+
+\item A special case is $ \xi \sim \mathcal{N}(\mu, \sigma^2)$, in that case we also write
+$$
+M_n \stackrel{d}{\rightarrow} \mathcal{N}(\mu, \sigma^2).
+$$
+
+
+\item \underline{\bf central limit theorem} Let $X_1, X_2, X_3, \ldots$ be a sequence of independent and identically distributed (i.i.d.) random variables with a finite mean $\mu$ and finite variance $\sigma^2$, then
+$$
+   \frac{\bar X- \mu}{\sigma/\sqrt{n}}  \stackrel{d}{\rightarrow} \mathcal{N}(0, 1)
+$$
+%where $ \xi $ is any random variable following $\Phi(\mathrm{x})$ is the cumulative distribution function of the standard normal distribution.
+
+\item Example 1: estimator of the CDF $ \hat F_n(x) $:
+$$
+  \hat F_n(x) - F(x)  \stackrel{d}{\rightarrow} \mathcal{N}\left(0, \frac{F(x)(1-F(x))}n\right)
+$$
+or
+$$
+ \sqrt{n} \frac{\hat F_n(x) - F(x)}{\sqrt{F(x)(1-F(x))}}  \stackrel{d}{\rightarrow} \mathcal{N}(0, 1).
+$$
+
+
+
+\end{itemize}
+
+
+\end{itemize}
+
+\newpage
+
+
 \bibliographystyle{apalike}
 \bibliography{../ref}
 % \begin{thebibliography}{}
