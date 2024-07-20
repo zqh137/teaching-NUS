@@ -6,6 +6,7 @@
 \usepackage{color}
 % \usepackage{ulem} % for strikethrough
 \usepackage{amsfonts}
+\usepackage{Sweave}
 \usepackage{bm}
 \usepackage{graphicx} 
 \usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
@@ -162,7 +163,7 @@ We will focus on nonparametric ways of estimating $f(\cdot)$ instead.
 \newpage
 {\LARGE\centerline{\textbf{Empirical distribution function}}}
 \vskip25pt
-\begin{minipage}{.9\textwidth}
+% \begin{minipage}{.9\textwidth}
     \Large The simplest function to estimate nonparametrically is the c.d.f. $F$ of random variable $X$. 
 From elementary probability theory, the {\it empirical distribution function} (EDF), defined as, for any $x\in\R$, 
 \begin{equation}
@@ -170,6 +171,22 @@ From elementary probability theory, the {\it empirical distribution function} (E
 \end{equation}
 is a straightforward estimator for $F(x)$. 
 \vskip 5pt
+\begin{Sinput}
+    library(ggplot2)
+    sample_data <- data.frame(x = faithful$eruptions)
+    ggplot(sample_data,aes(x))+stat_ecdf()
+    #ggsave("eruptions.eps")
+\end{Sinput}
+\begin{center}
+\includegraphics[width=0.65\textwidth,height=0.4\textwidth]{eruptions.eps}
+% \end{minipage}
+\end{center}
+{\bf Example:} the ``faithful" dataset is a famous dataset that contains information about the eruption of the Old Faithful geyser in Yellowstone National Park. It includes two numeric variables: ``eruptions" (the duration of the eruptions in minutes) and ``waiting" (the time in minutes between eruptions).
+\newpage
+{\LARGE\centerline{\textbf{Empirical distribution function (cont.)}}}
+\vskip25pt
+\begin{minipage}{.9\textwidth}
+    \large 
 For any fixed $x\in\R$, $\bone_{\{X_i\le x\}}$ is a Bernoulli RV with mean $F(x)$. As a consequence, $F_n(x)$ is a RV with mean 
 \begin{equation*}
     \E[F_n(x)]=\E\left(\bone_{\{X_1\le x\}}\right)=\IP(X_1\le x)=F(x),
@@ -178,17 +195,53 @@ and variance
 \begin{equation*}
     \Var(F_n(x))=\frac1{n^2}\cdot n\Var(\bone_{\{X_i\le x\}})=\frac1nF(x)\left(1-F(x)\right).
 \end{equation*}
+Therefore, $F_n(x)$ is a {\it consistent unbiased} estimator of $F(x)$. 
+
+    \vskip 5pt
+    In particular, based on the fact that $n\cdot F_n(x)\sim \mathrm{Bi}(n,F(x))$, we can consider its confidence interval, i.e. for a  given $x$ and $\alpha<1$, find $l_n, u_n$ such that
+    $$
+    \IP\left(l_n \leq F_n(x) \leq u_n\right) \geq 1-\alpha.
+    $$
+    {\bf Problem:} Observe $X \sim \operatorname{Bernoulli}(p)$, and find a $\mathrm{CI}$ for $p$.
 \end{minipage}
+
+\newpage
+{\LARGE\centerline{\textbf{Empirical distribution function (cont.)}}}
+\vskip25pt
+% \begin{minipage}{.9\textwidth}
+    \large 
+   
+    
+    \begin{itemize}
+      \item
+    There are a few methods: (i) Exact (Clopper-Pearson),
+      (ii) Asymptotic (Wald), (iii)  Wilson method and (iv) Asymptotic using variance stablilizing transformation. We only focus on (ii).
+    
+    \item Asymptotic (Wald)
+    
+     Pick a quantity and compute its distribution: Consider $\hat{p}_{n}:=\bar{X}=\frac1n\sum_{i=1}^nX_i$. By the CLT:
+    $$
+    \sqrt{n} \frac{\hat{p}_{n}-p}{\sqrt{p(1-p)}} \stackrel{d}{\rightarrow} \mathcal{N}(0,1)
+    $$
+    By the strong law of large numbers:
+    $$\hat{p}_n \stackrel{a.s.}{\longrightarrow} p.$$
+    Thus by Slutsky's lemma,
+    $$
+    \sqrt{n} \frac{\hat{p}_n-p}{\sqrt{\hat{p}_n\left(1-\hat{p}_n\right)}} \stackrel{d}{\rightarrow} \mathcal{N}(0,1).
+    $$
+    This being done, compute the associated $\mathrm{Cl}$ :
+    $$
+    C I=\left[\hat{p}_n-z_{\alpha / 2} \sqrt{\frac{\hat{p}_n\left(1-\hat{p}_n\right)}{n}} ; \hat{p}_n+z_{\alpha / 2} \sqrt{\frac{\hat{p}_n\left(1-\hat{p}_n\right)}{n}}\right].
+    $$
+    \end{itemize}
+    
+% \end{minipage}
 
 \newpage
 {\LARGE\centerline{\textbf{A native estimator}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large 
-    Therefore, $F_n(x)$ is a {\it consistent unbiased} estimator of $F(x)$. 
-
-    \vskip 5pt
-    In particular, EDF allocates equal weight $n^{-1}$ on each datum point.
     \vskip 5pt
     On the other hand, inspired by EDF, it is easy to write 
     \begin{eqnarray*}
@@ -322,7 +375,7 @@ $$\var\left(\widehat{f}_h(x)\right)\to\infty,~~~~\mathrm{as}~~~h\to0.$$
         $$\mathrm{Lipschitz~continous}\Rightarrow \mathrm{H\ddot{o}lder~continuous}\Rightarrow \mathrm{uniformly~continuous}.$$
 Mean Square Error (MSE) of $\widehat{f}_h(x)$, defined by 
 \begin{eqnarray}
-    {\rm MSE}\left\{\widehat{f}_h(x)\right\}:=\E\left[\left|\widehat{f}_h(x)-f(x)\right|^2\right],
+    {\rm MSE}\left(\widehat{f}_h(x)\right):=\E\left[\left|\widehat{f}_h(x)-f(x)\right|^2\right],
 \end{eqnarray}
 is a widely used performance measure of an estimator. 
 \end{minipage}
