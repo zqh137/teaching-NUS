@@ -163,25 +163,30 @@ We will focus on nonparametric ways of estimating $f(\cdot)$ instead.
 \newpage
 {\LARGE\centerline{\textbf{Empirical distribution function}}}
 \vskip25pt
-% \begin{minipage}{.9\textwidth}
+\begin{minipage}{.9\textwidth}
     \Large The simplest function to estimate nonparametrically is the c.d.f. $F$ of random variable $X$. 
 From elementary probability theory, the {\it empirical distribution function} (EDF), defined as, for any $x\in\R$, 
 \begin{equation}
     F_n(x):=\frac1n\sum_{i=1}^n\bone_{\{X_i\le x\}},
 \end{equation}
 is a straightforward estimator for $F(x)$. 
+
+\vskip 5pt 
+{\bf Example:} the ``faithful" dataset is a famous dataset that contains information about the eruption of the Old Faithful geyser in Yellowstone National Park. It includes two numeric variables: ``eruptions" (the duration of the eruptions in minutes) and ``waiting" (the time in minutes between eruptions).
+\end{minipage}
 \vskip 5pt
+
+\begin{center}
+\includegraphics[width=0.65\textwidth,height=0.4\textwidth]{eruptions.eps}
+
 \begin{Sinput}
     library(ggplot2)
     sample_data <- data.frame(x = faithful$eruptions)
     ggplot(sample_data,aes(x))+stat_ecdf()
     #ggsave("eruptions.eps")
 \end{Sinput}
-\begin{center}
-\includegraphics[width=0.65\textwidth,height=0.4\textwidth]{eruptions.eps}
-% \end{minipage}
 \end{center}
-{\bf Example:} the ``faithful" dataset is a famous dataset that contains information about the eruption of the Old Faithful geyser in Yellowstone National Park. It includes two numeric variables: ``eruptions" (the duration of the eruptions in minutes) and ``waiting" (the time in minutes between eruptions).
+
 \newpage
 {\LARGE\centerline{\textbf{Empirical distribution function (cont.)}}}
 \vskip25pt
