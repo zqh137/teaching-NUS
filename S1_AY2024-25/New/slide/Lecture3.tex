@@ -6,7 +6,7 @@
 \usepackage{color}
 % \usepackage{ulem} % for strikethrough
 \usepackage{amsfonts}
-% \usepackage{Sweave}
+\usepackage{Sweave}
 \usepackage{bm}
 \usepackage{graphicx} 
 \usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
@@ -102,7 +102,7 @@
 \begin{document}
 % \maketitle
 %
-
+\setkeys{Gin}{width=0.16\textwidth}
 % \begin{titlepage}
 % \begin{center}
 %     \vfill
@@ -269,58 +269,138 @@ Suppose the kernel function $K$ is a prob. density function, and $h>0$ small.
     \begin{eqnarray*}
         \frac{\mathrm{d}}{\mathrm{d}x}\IP(X+hY\le x)&=&\frac{\mathrm{d}}{\mathrm{d}x}\int_{\R}\IP\left(Y\le \frac{x-t}h\right)f(t)\mathrm{d}t\\
         &=&\int_{\R}\frac{\mathrm{d}}{\mathrm{d}x}\IP\left(Y\le \frac{x-t}h\right)f(t)\mathrm{d}t\\
-        &=&\int_{\R}\frac1hK\left(\frac{x-t}h\right)f(t)\mathrm{d}t\\
-        &=&\int_{\R}K_h(x-t)f(t)\mathrm{d}t\\
-        &=&\left(K_h*f\right)(x). 
+        % &=&\int_{\R}\frac1hK\left(\frac{x-t}h\right)f(t)\mathrm{d}t\\
+        &=&\int_{\R}K_h(x-t)f(t)\mathrm{d}t=\left(K_h*f\right)(x). 
     \end{eqnarray*}
     On the other hand, with Eq.~\eqref{def-kde}, we have 
-    \begin{eqnarray*}
+    \begin{eqnarray}\label{mean-kde}
         \E\left[\hat{f}(x)\right]=\E\left[K_h(x-X_1)\right]=\int_{\R}K_h(x-t)f(t)\mathrm{d}t=\left(K_h*f\right)(x).
-    \end{eqnarray*}
+    \end{eqnarray}
  \end{proof}
  \noindent
+ A direct advantage of this theorem is that the mean function $f*K_h$ of $\hat{f}(x)$ will inherit all the continuity and differentiability properties of $K$.
+\begin{rem}
 Now, if we take another look at Eq.~\eqref{def-kde}, 
 \begin{equation*}
     \hat{f}(x)=\frac1n\sum_{i=1}^nK_h(x-X_i), 
 \end{equation*}
 the kernel density estimator can be understood as an unbiased density estimator for the data with noise when $h>0$ is small.
-
+\end{rem}
+% For our purpose, in the rest of this slides we assume that 
+% % {\bf Assumptions:}
+%     \begin{enumerate}
+%         \item $K$ is a p.d.f.;
+%         \item $Z$ is a RV with density $K$, independent with $X$; 
+%         \item $\int xK(x)\mathrm{d}x=0$ and $\int x^3 K(x)\mathrm{d}x<\infty$, a.k.a. $\E(Z)=0$ and $\E[Z^3]<\infty$.
+%     \end{enumerate}
+%     Meanwhile, we also notice it is common in practice that taking $K$ a symmetric p.d.f., see Table~\ref{tabkernels}. However, it seems not an essential assumption. 
+\newpage
+{\LARGE\centerline{\textbf{R code}}}
+\vskip15pt
+% \begin{minipage}{.9\textwidth}
+    \Large
+% R code:  
+\begin{enumerate}
+\item density()
+\begin{Sinput}
+density(X, bw="?",  kernel = "?")
+# options for bw: a value for bandwidth, or a method:
+"nrd0", "nrd", "SJ", "bcv"
+    
+# options for kernel: "gaussian", "epanechnikov",
+"rectangular", "triangular", "biweight", "cosine"
+    
+\end{Sinput}
+\item kde(X, H) where H is the bandwidth, it can be any positive value, but will be discussed later.
+\begin{Schunk}
+\begin{Sinput}
+faithful
+# code 1
+library(ks)
+myout = kde(faithful$eruptions)
+hist(faithful$eruptions, freq = FALSE, ylim=c(0, 0.7), 20)
+lines(density(faithful$eruptions, kernel = "gaussian",
+bw=0.2), col="red")
+lines(density(faithful$eruptions, kernel = "gaussian",
+bw="SJ"), col="blue")
+lines(myout$eval.points, myout$estimate, col="yellow")
+# code 2
+library(ggplot2)
+# Combined histogram and kernel density plot using ggplot2
+p <- ggplot(faithful, aes(x = eruptions)) +
+geom_histogram(aes(y = after_stat(density)), binwidth = 0.2,
+ fill = "lightblue", color = "black") +
+geom_density(color = "red", fill = NA) +
+labs(title = "Histogram and Kernel Density Plot of Eruptions",
+       x = "Eruption Duration (minutes)",
+       y = "Density") +
+  theme_minimal()
+print(p)
+\end{Sinput}
+\end{Schunk}
+% # Save the plot as an EPS file
+% # ggsave("faithful_eruptions_hist_density.eps", plot = p, device = "eps", width = 8, height = 6)
+\end{enumerate}
+\begin{center}
+    \includegraphics[width=0.9\textwidth,height=0.5\textwidth]{erpt-kernel.eps}
+\end{center}
 \newpage
 {\LARGE\centerline{\textbf{Statistical Properties}}}
-\vskip25pt
-\begin{minipage}{.9\textwidth}
-    \Large
+\vskip15pt
+% \begin{minipage}{.9\textwidth}
+    \large \noindent
+    For our purpose, in the rest of this slides we assume that 
+    \begin{enumerate}
+        \item $K$ is a p.d.f.;
+        \item $Z$ is a RV with density $K$, independent with $X$; 
+        \item $K$ is symmetric, i.e. $K(x)=K(-x)$ for any $x\in\R$;\label{con-symm}
+        \item $\int x^3 K(x)\mathrm{d}x=\E(Z^3)<\infty$.
+    \end{enumerate}
+    We found these assumptions are very common in practice, for example see Table~\ref{tabkernels}. 
+    Besides, we also assume that $f''$ is continuous, and the third derivative $f^{(3)}$ of $f$ exists.
+% \begin{rem}
+%     From one side, Condition~\ref{con-symm} is quite reasonable for $K$ as an smoothing function. On the other hand, it is not necessary to the proofs below. Indeed, it can be replaced by a weaker condition: 
+%     \begin{equation}
+%         \int_{\R}xK(x)\mathrm{d}x=\E(Z)=0.
+%     \end{equation}
+% \end{rem}
     \begin{itemize}
-        \item Bias: 
+        \item Bias: recalling \eqref{mean-kde}, we have 
         \begin{eqnarray}
-            \bs\left\{\widehat{f}_h(x)\right\}&=&\E\left[\widehat{f}_h(x)\right]-f(x)\nonumber\\
-            &=&h^{-1}\IP\left(X_1\in B_j\right)-f(x)\nonumber\\
-            &=&\frac1h\int_{B_j}f(u)\mathrm{d}u-f(x)\nonumber\\
-            &=&f(u^*)-f(x),\label{bs-mvt}
+            \bs\left\{\hat{f}(x)\right\}&=&\E\left[\hat{f}(x)\right]-f(x)\nonumber\\
+            &=&(K_h*f)(x)-f(x)\nonumber\\
+            &=&\int_{\R}f(x-y)K_h(y)\mathrm{d}y-f(x)\nonumber\\
+            &=&\int_{\R}[f(x-y)-f(x)]K_h(y)\mathrm{d}y\nonumber\\
+            &=&\int_{\R}\left[(-y)f'(x)+\frac12y^2f''(x)+\frac16y^3f^{(3)}(u^*)\right]K_h(y)\mathrm{d}y\\
+            &=&-\E(hZ)f'(x)+\frac12\E[(hZ)^2]f''(x)+o(h^2)\nonumber\\
+            &=&\frac{h^2}2\var(Z)f''(x)+o(h^2).\label{bs-est1}
         \end{eqnarray}
-        where the last equity is due to the Mean Value Theorem for some $u^*\in B_j$. 
-    \end{itemize}
-Intuitively, we may think the bias will vanish as the binwidth $h\to0$. Nope. We need certain {\bf stronger} condition on the density function $f(\cdot)$ to ensure this. So far, we only assume the existence of $f(\cdot)$.
-\end{minipage}
-
-\newpage
-{\LARGE\centerline{\textbf{Statistical Properties (cont.)}}}
-\vskip25pt
-\begin{minipage}{.9\textwidth}
-    \Large
-    \begin{itemize}
         \item Variance:
         \begin{eqnarray}
-            \var\left(\widehat{f}_h(x)\right)&=&\frac1{(nh)^2}\var\left(\sum_{i=1}^n\bone_{\{X_i\in B_j\}}\right)\nonumber\\
-            &=&(nh^2)^{-1}\var\left(\bone_{\{X_1\in B_j\}}\right)\nonumber\\
-            &=&(nh^2)^{-1}p_x(1-p_x)\\
-            &=&(nh)^{-1}f(u^*)(1-p_x)\label{var-bound1}
+            \var\left(\hat{f}(x)\right)&=&\frac1n\var\left(K_h(x-X_1)\right)\nonumber\\
+            &=&\frac1n\E\left\{[K_h(x-X_1)-(K_h*f)(x)]^2\right\}\nonumber\\
+            &=&\frac1n\left\{\E\left[K_h(x-X_1)^2\right]-(K_h*f)(x)^2\right\}.
         \end{eqnarray}
-        where $p_x:=\int_{B_j}f(u)\mathrm{d}u$.
+        From \eqref{bs-est1}, we have 
+        \begin{equation}\label{boun1}
+            (K_h*f)(x)^2=\left[f(x)+O(h^2)\right]^2=f(x)^2+O(h^2).
+        \end{equation}
+        Furthermore, because $K$ is symmetric, we have 
+        \begin{eqnarray}
+            \E\left[K_h(x-X_1)^2\right]&=&\int_{\R}K_h(x-y)^2f(y)\mathrm{d}y\nonumber\\
+            &=&\frac1{h^2}\int_{\R}K\left(\frac{x-y}h\right)^2f(y)\mathrm{d}y\\
+            &=&\frac1{h^2}\int_{\R}K\left(\frac{y-x}h\right)^2f(y)\mathrm{d}y\\
+            &=&\frac1{h^2}\int_{\R}K(t)^2f(x+th)h\mathrm{d}t\nonumber\\
+            &=&\frac1h\int_{\R}K(t)^2[f(x)+thf'(x)+o(h)]\mathrm{d}t\\
+            &=&h^{-1}f(x)\|K\|_{L^2}^2+o(1),\label{boun2}
+        \end{eqnarray}
+        where $\|g\|_{L^2}^2:=\int_{\R}g(u)\mathrm{d}u$. 
+        Combining \eqref{boun1} and \eqref{boun2}, we have 
+        \begin{equation}
+            \var\left(\hat{f}(x)\right)=\frac1{nh}f(x)\|K\|_{L^2}^2+O(n^{-1}).
+        \end{equation}
     \end{itemize}
-From the last equality, it is not difficult to see that for $n$ fixed 
-$$\var\left(\widehat{f}_h(x)\right)\to\infty,~~~~\mathrm{as}~~~h\to0.$$ 
-\end{minipage}
+% \end{minipage}
 
 
 \newpage
