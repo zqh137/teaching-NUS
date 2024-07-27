@@ -10,6 +10,8 @@
 \usepackage{bm}
 \usepackage{graphicx} 
 \usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
+% \usepackage{xr} % [cross-referencing] 
+% \externaldocument[m-]{m} % [cross-referencing] 
 % \usepackage[british]{babel}
 %\usepackage[T1]{fontenc}
 %\usepackage{mathptmx}
@@ -495,7 +497,7 @@ Instead of focusing on the accuracy of $\widehat{f}_h(x)$ as an estimator of $f$
     With stronger assumptions on the derivative $f'$, the asymptotic MISE is\footnote{See \cite[Section~3.2]{scott15} for more detailed analysis.}
     $${\rm AMISE}(h)=\frac1{nh}+\frac1{12}h^2\|f'\|_2^2.$$
     Hence, as we did for \eqref{bound-mse1}, minimizing at $h^*=\left[\frac6{n\|f'\|_2^2}\right]^{1/3}$, 
-    \begin{equation}
+    \begin{equation}\label{optamise1}
     {\rm AMISE}(h^*)=(3\|f'\|_2/4)^{2/3}n^{-2/3}.
     \end{equation}
     Taking the density of normal distribution $\mathcal{N}(\mu,\sigma^2)$ as a reference, $\|f'\|_2^2=(4\sqrt{\pi}\sigma)^{-1}$
