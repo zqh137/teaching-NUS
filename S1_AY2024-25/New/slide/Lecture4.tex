@@ -12,7 +12,7 @@
 \usepackage{graphicx} 
 \usepackage{amsfonts,amsmath,latexsym,amssymb,mathrsfs,amsthm,mathtools}
 \usepackage{xr} % [cross-referencing] 
-\externaldocument[L2-]{Lecture2} % [cross-referencing] 
+\externaldocument[L3-]{Lecture3} % [cross-referencing] 
 % \usepackage[british]{babel}
 %\usepackage[T1]{fontenc}
 %\usepackage{mathptmx}
@@ -130,54 +130,62 @@
 %
 
 \newpage
-{\LARGE\centerline{\textbf{Lecture~3:~Kernel Density Estimation}\footnote{Last modified in \filemodprintdate{Lecture3}.}}}
+{\LARGE\centerline{\textbf{Lecture~4:~Bandwidth Selection Methods}\footnote{Last modified in \filemodprintdate{Lecture4}.}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
 \begin{itemize}
-\item Shortcomings of the Histogram method
-\item The native estimator
-\item Kernel Functions  
-\item The kernel density estimator
-\item Theoretical properties 
-\item The optimal kernel
+\item Reference Method
+\begin{itemize}
+    \item Silverman's Rule of Thumb
+\end{itemize}
+\item Plug-in Method
+    \item Cross-Validation 
+    \begin{itemize}
+        \item Maximum Likelihood Cross-Validation
+        \item Least-Squares Cross-Validation
+    \end{itemize}
 
 \end{itemize}
+More details can be found in \cite{hall91minima}, \cite{hall91lower}, \cite{hall92smoothed}, \cite{hardle12}.
 \end{minipage}
+
 \newpage
-{\Large\centerline{\textbf{Shortcomings of Histogram method}}}
+{\Large\centerline{\textbf{Motivation}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large
-\begin{itemize}
-    \item[$\blacktriangleright$] Too restrictive: for every $x$ in the same interval $B_j=[x_0+jh, x_0+(j+1)h)$, histogram assigns the same estimator $\hat{f}_h(x_0+jh)$;
-    \item[$\blacktriangleright$] Not continuous: no matter how $f$ looks like;
-    \item[$\blacktriangleright$] The convergence rate $O(n^{-2/3})$ of MSE is too slow.  
-\end{itemize}
-For a continuous density estimator, probably the convergence rate of its MSE could be improved to a better asymptotic order, more close to $O(n^{-1})$.
+    The choice of bandwidth $h$ is the main problem of kernel density estimation. 
+    
+    Why? The bandwidth $h$ of the kernel estimator controls the smoothness of the resulting curve estimate.
+
+    An ideal solution of selecting the bandwidth should be both applicable in practice, and theoretically desirable as well. 
+
+    Recall the global optimal bandwidth, Eq.~\eqref{L3-optbin1} in Lecture 3,
+    \begin{equation*}
+        h^*=\left[\frac{\|K\|_{L^2}^2}{\var(Z)^2\|f''\|_{L^2}^2}\right]^{1/5}n^{-1/5}. 
+    \end{equation*}
+One thing need to keep in mind: the kernel $K$ is known, and the density $f$ is not.
 \end{minipage}
 
 
 
 \newpage
-{\LARGE\centerline{\textbf{From the native estimator}}}
+{\LARGE\centerline{\textbf{Rule-of-Thumb Bandwidth}}}
 \vskip25pt
 \begin{minipage}{.9\textwidth}
     \Large 
-   The native estimator:
-   \begin{equation}
-    \hat{f}_n(x):=\frac1{2nh}\sum_{i=1}^n\bone_{\{x-h<X_i\le x+h\}}=\frac1{nh}\sum_{i=1}^nw\left(\frac{x-X_i}h\right),
-   \end{equation}
-    where $w(x):=\frac12\bone_{\left\{x\in [-1,1)\right\}}$. 
-    \vskip5pt
-    \begin{itemize}
-    \item Each observation/datum falls into the interval $(x-h,x+h]$ has equal contribution to the frequency count. 
-        \begin{itemize}
-            \item It looks more reasonable to assigns more weights to contributions from observations very close to $x$ than to those coming from  observations far from $x$.
-        \end{itemize}
-    \item Given the sample $\mathbf{x}=(x_1,\dots,x_n)$, $\hat{f}_n(x)$ as a function is not even continuous. 
-    \end{itemize}
-    {\bf How to improve}: replacing the weight function $w(\cdot)$ with a more ``concentrative'' and {\it smoother} function.
+   We try to estimate $\|f''\|^2_{L^2}$, assuming $f$ to belong to a pre-specified family of density functions. For example, we assume the unknown distribution be $\mathcal{N}(\mu,\sigma^2)$. Then we have 
+   \begin{eqnarray*}
+    \|f''\|^2_{L^2}&=&\sigma^{-5}\int_{\R}\phi''(x)^2\mathrm{d}x\\
+    &=&\frac38 \pi^{-1/2}\sigma^{-5}\approx0.212\sigma^{-5},
+   \end{eqnarray*}
+   where $\phi(x)=\frac1{\sqrt{2\pi}}e^{-x^2/2}$ is the p.d.f. of standard normal distribution. 
+If a Gaussian kernel is being used, then the bandwidth is 
+\begin{eqnarray}
+    \hat{h}_{rot}&=&\left[\frac{\|\phi\|_{L^2}^2}{\frac38 \pi^{-1/2}\sigma^{-5}}\right]^{1/5}n^{-1/5}\nonumber\\
+    &=&(3/4)^{1/5}\sigma n^{-1/5}\approx1.06\sigma n^{-1/5}
+\end{eqnarray}
     \end{minipage}
 
     \newpage
@@ -407,15 +415,11 @@ print(p)
 \begin{eqnarray}
     {\rm MSE}\left(\hat{f}(x)\right)&=&\bs\left\{\hat{f}(x)\right\}^2+\var\left(\hat{f}(x)\right)\nonumber\\
     &=&\left[\frac{h^2}2\var(Z)f''(x)+o(h^2)\right]^2+\frac1{nh}f(x)\|K\|_{L^2}^2+O(n^{-1})\nonumber\\
-    &=&\frac{h^4}4\var(Z)^2f''(x)^2+\frac1{nh}f(x)\|K\|_{L^2}^2+o(h^2)+O(n^{-1})\label{inherit-error}\\
+    &=&\frac{h^4}4\var(Z)^2f''(x)^2+\frac1{nh}f(x)\|K\|_{L^2}^2+o(h^2)+O(n^{-1})\\
     &\asymp&\frac{h^4}4\var(Z)^2f''(x)^2+\frac1{nh}f(x)\|K\|_{L^2}^2=:{\rm AMSE}\left(\hat{f}(x)\right)\label{amse-1}
 \end{eqnarray}
 where {\rm AMSE} stands for the asymptotic mean square error. 
-\begin{rem}
-It is worth mentioning that in \eqref{inherit-error} the order/magnitude of error for squared bias should be $o(h^2)$, rather than $o(h^4)$. I found this mistake is very common in related books and papers. So far, this mistake can be tracked back to \cite[Page.~834]{rosenblatt56}.
-\end{rem}
-\newpage
-\item Local optimal bandwidth (w.r.t. AMSE)
+\item Optimal local bandwidth (w.r.t. AMSE)
 
 By differentiate \eqref{amse-1} w.r.t. $h$, we obtain 
 \begin{equation}
@@ -427,7 +431,6 @@ and
     &=&\frac54\left[f(x)^2f''(x)\right]^{2/5}\left[\|K\|_{L^2}^2\sqrt{\var(Z)}\right]^{4/5}n^{-4/5}.
 \end{eqnarray}
 Note $h^*_x$ optimizes AMSE locally, i.e. for any fixed $x\in\R$. 
-\newpage
 \item AMISE and global optimal bandwidth 
 
 A global measure of precision is the asymptotic mean integrated squared error (AMISE): from \eqref{amse-1} we get 
@@ -437,7 +440,7 @@ A global measure of precision is the asymptotic mean integrated squared error (A
 \end{eqnarray}
 and 
 \begin{eqnarray}
-    h^*&=&\left[\frac{\|K\|_{L^2}^2}{\var(Z)^2\|f''\|_{L^2}^2}\right]^{1/5}n^{-1/5},\label{optbin1}\\
+    h^*&=&\left[\frac{\|K\|_{L^2}^2}{\var(Z)^2\|f''\|_{L^2}^2}\right]^{1/5}n^{-1/5},\\
     {\rm AMISE}^*\left(\hat{f}\right)&=&\frac54\left[\|K\|^2_{L^2}\sqrt{\var(Z)}\right]^{4/5}\|f''\|_{L^2}^{2/5}n^{-4/5}. \label{optamise2}
 \end{eqnarray}
 Comparing \eqref{optamise2} with AMISE for histogram, c.f. \eqref{L2-optamise1} in Lecture~2, the convergence rate $O(n^{-4/5})$ of kernel method is much faster than convergence rate $O(n^{-2/3})$  of histogram method. The kernel estimators are superior in rate to histograms. 
